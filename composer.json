@@ -1,0 +1,66 @@
+{
+    "name": "arhitov/laravel-billing",
+    "description": "Billing module for laravel projects",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "billing"
+    ],
+    "homepage": "https://github.com/arhitov/laravel-billing",
+    "authors": [
+        {
+            "name": "arhitov",
+            "email": "clgsru@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "arhitov/laravel-helpers": "dev-main",
+        "arhitov/laravel-package-helpers": "dev-main",
+        "laravel/framework": "^10",
+        "watson/validating": "^8.2"
+    },
+    "require-dev": {
+        "orchestra/testbench": "*",
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arhitov\\LaravelBilling\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Arhitov\\LaravelBilling\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ],
+        "test": [
+            "@php vendor/bin/phpunit"
+        ]
+    }
+}
