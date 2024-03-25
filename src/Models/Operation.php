@@ -2,6 +2,7 @@
 
 namespace Arhitov\LaravelBilling\Models;
 
+use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
@@ -28,14 +29,15 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $canceled_at
  * @property ?Carbon $refund_at
  * @property ?Carbon $errored_at
- * @property ?Carbon $created_at Дата создания
- * @property ?Carbon $updated_at Дата обновление
+ * @property ?Carbon $created_at Date of creation
+ * @property ?Carbon $updated_at Date updated
  */
 class Operation extends Model
 {
     use ValidatingTrait, EloquentModelExtendTrait {
         EloquentModelExtendTrait::getRules insteadof ValidatingTrait;
     }
+    use StateDatetimeTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -54,13 +56,8 @@ class Operation extends Model
         'recipient_balance_id',
         'recipient_amount_before',
         'recipient_amount_after',
-        'state',
         'description',
-        'pending_at',
-        'succeeded_at',
-        'canceled_at',
-        'refund_at',
-        'errored_at',
+        'state',
     ];
 
     /**
@@ -80,13 +77,8 @@ class Operation extends Model
         'recipient_balance_id' => ['required', 'int'],
         'recipient_amount_before' => ['nullable', 'numeric'],
         'recipient_amount_after' => ['nullable', 'numeric'],
-        'state' => ['required', 'in:class:' . OperationStateEnum::class],
         'description' => ['nullable', 'string', 'max:1000'],
-        'pending_at' => ['nullable', 'datetime'],
-        'succeeded_at' => ['nullable', 'datetime'],
-        'canceled_at' => ['nullable', 'datetime'],
-        'refund_at' => ['nullable', 'datetime'],
-        'errored_at' => ['nullable', 'datetime'],
+        'state' => ['required', 'in:class:' . OperationStateEnum::class],
     ];
 
     /**
@@ -147,25 +139,5 @@ class Operation extends Model
     public function getTable(): string
     {
         return config('billing.database.tables.operation');
-    }
-
-    public static function boot(): void
-    {
-        self::creating(function (self $operation) {
-            $operation->setStatusDatetime();
-        });
-        self::updating(function (self $operation) {
-            $operation->setStatusDatetime();
-        });
-
-        parent::boot();
-    }
-
-    private function setStatusDatetime(): void
-    {
-        $datetimeKey = ($this->state?->value ?? '') . '_at';
-        if (($this->casts[$datetimeKey] ?? null) === 'datetime') {
-            $this->$datetimeKey = Carbon::now();
-        }
     }
 }

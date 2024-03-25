@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use ValueError;
 use Watson\Validating\ValidatingTrait;
 
-class ModelBalanceTest extends TestCase
+class ModelBalanceUnitTest extends TestCase
 {
     protected static Balance $model;
 

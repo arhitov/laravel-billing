@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Tests\Feature;
 
 use Arhitov\LaravelBilling\Decrease;
+use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Arhitov\LaravelBilling\Increase;
@@ -53,6 +54,20 @@ class BalanceTest extends FeatureTestCase
             $balance2->key,
             'Key balance incorrect.',
         );
+    }
+
+    /**
+     * @depends testCreateBalance
+     */
+    public function testChangeState()
+    {
+        $owner = $this->createOwner();
+        $balance = $owner->getBalance();
+        $this->assertNotNull($balance->active_at, 'Datetime active_at not set.');
+        $this->assertNull($balance->locked_at, 'Datetime locked_at should not be installed yet.');
+        $balance->state = BalanceStateEnum::Locked;
+        $balance->save();
+        $this->assertNotNull($balance->locked_at, 'Datetime active_at not set.');
     }
 
     /**

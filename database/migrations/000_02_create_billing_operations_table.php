@@ -24,8 +24,8 @@ return new class extends Migration
             $table->bigInteger('recipient_balance_id')->unsigned()->index();
             $table->decimal('recipient_amount_before', 18, config('billing.rounding.precision'))->nullable();
             $table->decimal('recipient_amount_after', 18, config('billing.rounding.precision'))->nullable();
-            $table->enum('state', ['created', 'pending', 'waiting_for_capture', 'succeeded', 'canceled', 'refund', 'errored'])->index();
             $table->string('description', 1000)->nullable();
+            $table->enum('state', ['created', 'pending', 'waiting_for_capture', 'succeeded', 'canceled', 'refund', 'errored'])->index();
             $table->timestamp('pending_at')->nullable()->index();
             $table->timestamp('succeeded_at')->nullable()->index();
             $table->timestamp('canceled_at')->nullable()->index();

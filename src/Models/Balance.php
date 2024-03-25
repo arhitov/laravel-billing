@@ -2,6 +2,7 @@
 
 namespace Arhitov\LaravelBilling\Models;
 
+use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
 use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
@@ -21,16 +22,17 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $active_at
  * @property ?Carbon $inactive_at
  * @property ?Carbon $locked_at
- * @property ?Carbon $created_at Дата создания
- * @property ?Carbon $updated_at Дата обновление
+ * @property ?Carbon $created_at Date of creation
+ * @property ?Carbon $updated_at Date updated
  * Dependency:
- * @property \Arhitov\LaravelBilling\Models\Traits\ModelOwnerExpandTrait $owner
+ * @property \Arhitov\LaravelBilling\Contracts\BillableInterface $owner
  */
 class Balance extends Model
 {
     use ValidatingTrait, EloquentModelExtendTrait {
         EloquentModelExtendTrait::getRules insteadof ValidatingTrait;
     }
+    use StateDatetimeTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -45,9 +47,6 @@ class Balance extends Model
         'currency',
         'limit',
         'state',
-        'active_at',
-        'inactive_at',
-        'locked_at',
     ];
 
     /**
@@ -63,9 +62,6 @@ class Balance extends Model
         'currency' => ['required', 'in:class:' . CurrencyEnum::class],
         'limit' => ['nullable', 'numeric', 'min:0'],
         'state' => ['required', 'in:class:' . BalanceStateEnum::class],
-        'active_at' => ['nullable', 'datetime'],
-        'inactive_at' => ['nullable', 'datetime'],
-        'locked_at' => ['nullable', 'datetime'],
     ];
 
     /**
@@ -128,6 +124,11 @@ class Balance extends Model
         parent::boot();
     }
 
+    /**
+     * Dependency Balance owner
+     *
+     * @return MorphTo
+     */
     public function owner(): MorphTo
     {
         return $this->morphTo('owner');

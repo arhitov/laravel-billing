@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use ValueError;
 use Watson\Validating\ValidatingTrait;
 
-class ModelOperationTest extends TestCase
+class ModelOperationUnitTest extends TestCase
 {
     protected static Operation $model;
 
