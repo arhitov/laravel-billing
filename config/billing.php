@@ -22,8 +22,6 @@ return [
             'operation' => 'billing_operation',
             /** Saved payment table */
             'saved_payment' => 'billing_saved_payment',
-            /** Subscription table */
-            'subscriptions' => 'billing_subscription',
         ],
 
         /**

@@ -9,6 +9,7 @@ use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Watson\Validating\ValidatingTrait;
 
@@ -26,6 +27,7 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $updated_at Date updated
  * Dependency:
  * @property \Arhitov\LaravelBilling\Contracts\BillableInterface $owner
+ * @property \Illuminate\Support\Collection<SavedPayment> $saved_payment
  */
 class Balance extends Model
 {
@@ -132,5 +134,22 @@ class Balance extends Model
     public function owner(): MorphTo
     {
         return $this->morphTo('owner');
+    }
+
+    /**
+     * Dependency Saved payment methods
+     *
+     * @return HasMany
+     */
+    public function savedPayment(): HasMany
+    {
+        return $this->hasMany(SavedPayment::class,'owner_balance_id', 'id');
+    }
+
+    public function addPaymentMethodsOrFail(array $attributes): SavedPayment
+    {
+        /** @var SavedPayment $savedPayment */
+        $savedPayment = $this->savedPayment()->create($attributes);
+        return $savedPayment;
     }
 }

@@ -11,6 +11,7 @@ Billing module for Laravel projects with support for transactions, invoicing, su
 
 - Multi-balance
 - Operations history
+- Saved payment method
 
 ### in developing
 

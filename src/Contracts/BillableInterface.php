@@ -5,6 +5,7 @@ namespace Arhitov\LaravelBilling\Contracts;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Models\Balance;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 interface BillableInterface
 {
@@ -19,4 +20,6 @@ interface BillableInterface
     public function hasBalance(string $key = 'main'): bool;
 
     public function createBalance(CurrencyEnum $currency = null, string $key = 'main'): Balance;
+
+    public function getPaymentMethodList(): Collection;
 }

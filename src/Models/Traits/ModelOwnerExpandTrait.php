@@ -5,7 +5,9 @@ namespace Arhitov\LaravelBilling\Models\Traits;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Models\Balance;
+use Arhitov\LaravelBilling\Models\SavedPayment;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 trait ModelOwnerExpandTrait
 {
@@ -51,5 +53,15 @@ trait ModelOwnerExpandTrait
         // Method boot::created in model Balance doesn't start in this case. Call manually.
         event(new BalanceCreatedEvent($balance));
         return $balance;
+    }
+
+    public function getPaymentMethodList(): Collection
+    {
+        $balanceIdList = $this->balance()->pluck('id')->toArray();
+        if (empty($balanceIdList)) {
+            return new Collection();
+        }
+
+        return SavedPayment::query()->whereIn('owner_balance_id', $balanceIdList)->get();
     }
 }
