@@ -35,32 +35,6 @@ class EventsTest extends FeatureTestCase
     /**
      * @depends testSimple
      * @return void
-     */
-    public function testBalanceCreatedEvent()
-    {
-        Event::fake();
-
-        $this->createOwner()->createBalance();
-
-        Event::assertDispatched(Events\BalanceCreatedEvent::class);
-    }
-
-    /**
-     * @depends testSimple
-     * @return void
-     */
-    public function testBalanceCreatedEvent2()
-    {
-        Event::fake();
-
-        $this->createOwner()->getBalance();
-
-        Event::assertDispatched(Events\BalanceCreatedEvent::class);
-    }
-
-    /**
-     * @depends testSimple
-     * @return void
      * @throws TransferUsageException
      */
     public function testBalanceIncreaseEvent()

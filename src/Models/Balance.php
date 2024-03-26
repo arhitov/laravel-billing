@@ -117,14 +117,15 @@ class Balance extends Model
         return config('billing.database.tables.balance');
     }
 
-    public static function boot(): void
-    {
-        self::created(function (self $balance) {
-            event(new BalanceCreatedEvent($balance));
-        });
-
-        parent::boot();
-    }
+//    public static function boot(): void
+//    {
+////        // Call event in Owner::createBalance
+////        self::created(function (self $balance) {
+////            event(new BalanceCreatedEvent($balance));
+////        });
+//
+//        parent::boot();
+//    }
 
     /**
      * Dependency Balance owner
