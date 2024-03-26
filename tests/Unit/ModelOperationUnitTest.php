@@ -77,13 +77,13 @@ class ModelOperationUnitTest extends TestCase
         $this->assertTrue($validator->fails(), 'Error validator');
         $errorsList = $validator->errors()->all() ?? [];
 
-        $this->assertContains('The operation id field is required.', $errorsList, 'The operation not validating.');
-        $this->assertContains('The gateway field is required.', $errorsList, 'The gateway not validating.');
-        $this->assertContains('The amount field must be a number.', $errorsList, 'The amount not validating.');
-        $this->assertContains('The sender balance id field is required.', $errorsList, 'The sender not validating.');
-        $this->assertContains('The recipient balance id field is required.', $errorsList, 'The recipient not validating.');
-        $this->assertContains('The selected currency is invalid.', $errorsList, 'The currency not validating.');
-        $this->assertContains('The selected state is invalid.', $errorsList, 'The selected not validating.');
+        $this->assertContains('The operation uuid field is required.', $errorsList, 'The "operation_uuid" not validating.');
+        $this->assertContains('The gateway field is required.', $errorsList, 'The "gateway" not validating.');
+        $this->assertContains('The amount field must be a number.', $errorsList, 'The "amount" not validating.');
+        $this->assertContains('The sender balance id field is required.', $errorsList, 'The "sender" not validating.');
+        $this->assertContains('The recipient balance id field is required.', $errorsList, 'The "recipient" not validating.');
+        $this->assertContains('The selected currency is invalid.', $errorsList, 'The "currency" not validating.');
+        $this->assertContains('The selected state is invalid.', $errorsList, 'The "state" not validating.');
     }
 
     /**

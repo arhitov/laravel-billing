@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create(config('billing.database.tables.operation'), static function (Blueprint $table) {
             $table->id();
-            $table->uuid('operation_id')->unique();
+            $table->string('operation_identifier', 50)->nullable()->index()->comment('Operation identifier key');
+            $table->uuid('operation_uuid')->unique();
             $table->bigInteger('linked_operation_id')->unsigned()->nullable()->index();
             $table->string('gateway', 50);
             $table->decimal('amount', 18, config('billing.rounding.precision'));

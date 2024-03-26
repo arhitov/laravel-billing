@@ -27,11 +27,14 @@ class Transfer
         protected float   $amount,
         protected string  $gateway = 'internal',
         protected ?string $description = null,
+        protected ?string $operation_identifier = null,
+        protected ?string $operation_uuid = null,
     )
     {
         // Create operation
         $this->operation = Operation::make([
-            'operation_id' => Str::orderedUuid()->toString(),
+            'operation_identifier' => $this->operation_identifier ?? null,
+            'operation_uuid' => $this->operation_uuid ?? Str::orderedUuid()->toString(),
             'gateway' => $this->gateway,
             'amount' => $this->amount,
             'currency' => $this->recipient->currency,

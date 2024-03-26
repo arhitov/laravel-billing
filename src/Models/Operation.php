@@ -12,7 +12,8 @@ use Watson\Validating\ValidatingTrait;
 
 /**
  * @property int $id
- * @property string $operation_id
+ * @property string $operation_identifier
+ * @property string $operation_uuid
  * @property string $linked_operation_id
  * @property string $gateway
  * @property float $amount
@@ -45,7 +46,8 @@ class Operation extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'operation_id',
+        'operation_identifier',
+        'operation_uuid',
         'linked_operation_id',
         'gateway',
         'amount',
@@ -66,7 +68,8 @@ class Operation extends Model
      * @var array[]
      */
     protected $rules = [
-        'operation_id' => ['required', 'string'],
+        'operation_identifier' => ['nullable', 'string'],
+        'operation_uuid' => ['required', 'string'],
         'linked_operation_id' => ['nullable', 'int'],
         'gateway' => ['required', 'string', 'max:50'],
         'amount' => ['required', 'numeric'],
@@ -87,6 +90,7 @@ class Operation extends Model
      * @var array
      */
     protected $attributes = [
+        'operation_identifier' => null,
         'linked_operation_id' => null,
         'description' => null,
         'sender_amount_before' => null,
@@ -106,7 +110,7 @@ class Operation extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'operation_id' => 'string',
+        'operation_uuid' => 'string',
         'amount' => 'float',
         'currency' => CurrencyEnum::class,
         'sender_amount_before' => 'float',

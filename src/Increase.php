@@ -16,6 +16,8 @@ class Increase extends Transfer
      * @param string $gateway
      * @param string|null $description
      * @param Balance|null $sender
+     * @param string|null $operation_identifier
+     * @param string|null $operation_uuid
      * @throws TransferUsageException
      */
     public function __construct(
@@ -24,6 +26,8 @@ class Increase extends Transfer
         string   $gateway = 'internal',
         ?string  $description = null,
         ?Balance $sender = null,
+        ?string  $operation_identifier = null,
+        ?string  $operation_uuid = null,
     )
     {
         $sender ??= (new RootBalance())->getBalance();
@@ -38,6 +42,8 @@ class Increase extends Transfer
             $amount,
             $gateway,
             $description,
+            $operation_identifier,
+            $operation_uuid,
         );
     }
 }
