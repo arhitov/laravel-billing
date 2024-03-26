@@ -25,8 +25,8 @@ return new class extends Migration
             $table->timestamp('state_locked_at')->nullable()->index();
             $table->timestamps();
 
-            $table->unique(['owner_type', 'owner_id'], 'owner');
-            $table->unique(['owner_type', 'owner_id', 'key'], 'unique_balance');
+            $table->unique(['owner_type', 'owner_id']);
+            $table->unique(['owner_type', 'owner_id', 'key']);
 
             $table->comment('Owner balance');
         });

@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamp('state_locked_at')->nullable()->index();
             $table->timestamps();
 
-            $table->unique(['rebill_id', 'gateway'], 'payment_method_gateway');
+            $table->unique(['rebill_id', 'gateway']);
 
             $table->comment('Saved payment method');
 
