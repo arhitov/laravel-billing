@@ -26,11 +26,11 @@ return new class extends Migration
             $table->decimal('recipient_amount_after', 18, config('billing.rounding.precision'))->nullable();
             $table->string('description', 1000)->nullable();
             $table->enum('state', ['created', 'pending', 'waiting_for_capture', 'succeeded', 'canceled', 'refund', 'errored'])->index();
-            $table->timestamp('pending_at')->nullable()->index();
-            $table->timestamp('succeeded_at')->nullable()->index();
-            $table->timestamp('canceled_at')->nullable()->index();
-            $table->timestamp('errored_at')->nullable()->index();
-            $table->timestamp('refund_at')->nullable()->index();
+            $table->timestamp('state_pending_at')->nullable()->index();
+            $table->timestamp('state_succeeded_at')->nullable()->index();
+            $table->timestamp('state_canceled_at')->nullable()->index();
+            $table->timestamp('state_errored_at')->nullable()->index();
+            $table->timestamp('state_refund_at')->nullable()->index();
             $table->timestamps();
 
             $table->comment('Balance transactions');

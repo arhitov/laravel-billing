@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/laravel-helpers.git",
-                "reference": "54d8e548956586bc5b8dabd4484f2a2092ad6ec8"
+                "reference": "96fe8a0ac1044eadbb1cec53eb7d4b26a2d5eb20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/laravel-helpers/zipball/54d8e548956586bc5b8dabd4484f2a2092ad6ec8",
-                "reference": "54d8e548956586bc5b8dabd4484f2a2092ad6ec8",
+                "url": "https://api.github.com/repos/arhitov/laravel-helpers/zipball/96fe8a0ac1044eadbb1cec53eb7d4b26a2d5eb20",
+                "reference": "96fe8a0ac1044eadbb1cec53eb7d4b26a2d5eb20",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "issues": "https://github.com/arhitov/laravel-helpers/issues",
                 "source": "https://github.com/arhitov/laravel-helpers/tree/main"
             },
-            "time": "2024-03-25T19:56:29+00:00"
+            "time": "2024-03-26T10:02:00+00:00"
         },
         {
             "name": "arhitov/laravel-package-helpers",
@@ -8589,7 +8589,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "arhitov/laravel-helpers": 20,
         "arhitov/laravel-package-helpers": 20
     },
     "prefer-stable": true,

@@ -6,11 +6,13 @@ use Arhitov\LaravelBilling\Decrease;
 use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
+use Arhitov\LaravelBilling\Exceptions\TransferUsageException;
 use Arhitov\LaravelBilling\Increase;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
 use Arhitov\LaravelBilling\Transfer;
+use ErrorException;
 
 class BalanceTest extends FeatureTestCase
 {
@@ -58,20 +60,34 @@ class BalanceTest extends FeatureTestCase
 
     /**
      * @depends testCreateBalance
+     * @throws ErrorException
      */
     public function testChangeState()
     {
         $owner = $this->createOwner();
         $balance = $owner->getBalance();
-        $this->assertNotNull($balance->active_at, 'Datetime active_at not set.');
-        $this->assertNull($balance->locked_at, 'Datetime locked_at should not be installed yet.');
+        $this->assertNotNull($balance->state_active_at, 'Datetime "state_active_at" not set.');
+        $this->assertNull($balance->state_locked_at, 'Datetime "state_locked_at" should not be installed yet.');
+
+        $balance->setState('locked');
+        $this->assertEquals(BalanceStateEnum::Locked, $balance->state);
+        $balance->state = BalanceStateEnum::Active;
+        $this->assertEquals(BalanceStateEnum::Active, $balance->state);
+
+        $balance->setState(BalanceStateEnum::Locked);
+        $this->assertEquals(BalanceStateEnum::Locked, $balance->state);
+        $balance->state = BalanceStateEnum::Active;
+        $this->assertEquals(BalanceStateEnum::Active, $balance->state);
+
         $balance->state = BalanceStateEnum::Locked;
         $balance->save();
-        $this->assertNotNull($balance->locked_at, 'Datetime active_at not set.');
+        $this->assertEquals(BalanceStateEnum::Locked, $balance->state);
+        $this->assertNotNull($balance->state_locked_at, 'Datetime "state_active_at" not set.');
     }
 
     /**
      * @depends testCreateBalance
+     * @throws TransferUsageException
      */
     public function testIncreaseBalance()
     {
@@ -85,11 +101,11 @@ class BalanceTest extends FeatureTestCase
         $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
 
         $this->assertTrue($increase->isAllow(), 'Not allow increase');
-        $this->assertNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is not null.');
+        $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
         $this->assertEquals(OperationStateEnum::Created, $operation->state, 'Status operation incorrect.');
         $this->assertInstanceOf(Operation::class, $operation, 'Operation class is not ' . Operation::class);
         $this->assertTrue($increase->execute(), 'Operation increase failed');
-        $this->assertNotNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is null.');
+        $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
         $this->assertEquals(100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
@@ -97,6 +113,7 @@ class BalanceTest extends FeatureTestCase
 
     /**
      * @depends testCreateBalance
+     * @throws TransferUsageException
      */
     public function testIncreaseDescriptionBalance()
     {
@@ -122,6 +139,7 @@ class BalanceTest extends FeatureTestCase
 
     /**
      * @depends testCreateBalance
+     * @throws TransferUsageException
      */
     public function testDecreaseBalance()
     {
@@ -138,11 +156,11 @@ class BalanceTest extends FeatureTestCase
         $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
 
         $this->assertTrue($decrease->isAllow(), 'Not allow increase');
-        $this->assertNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is not null.');
+        $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
         $this->assertEquals(OperationStateEnum::Created, $operation->state, 'Status operation incorrect.');
         $this->assertInstanceOf(Operation::class, $operation, 'Operation class is not ' . Operation::class);
         $this->assertTrue($decrease->execute(), 'Operation increase failed');
-        $this->assertNotNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is null.');
+        $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
         $this->assertEquals(-100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
@@ -172,11 +190,11 @@ class BalanceTest extends FeatureTestCase
         $this->assertEquals(0, $recipientOwner->getBalance()->amount, 'The recipient has an incorrect balance.');
 
         $this->assertTrue($decrease->isAllow(), 'Not allow increase');
-        $this->assertNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is not null.');
+        $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
         $this->assertEquals(OperationStateEnum::Created, $operation->state, 'Status operation incorrect.');
         $this->assertInstanceOf(Operation::class, $operation, 'Operation class is not ' . Operation::class);
         $this->assertTrue($decrease->execute(), 'Operation increase failed');
-        $this->assertNotNull($operation->succeeded_at, 'Temporary meta "succeeded_at" is null.');
+        $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
         $this->assertEquals(-100, $senderOwner->getBalance()->amount, 'The sender has an incorrect balance.');

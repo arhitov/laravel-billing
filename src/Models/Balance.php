@@ -20,9 +20,9 @@ use Watson\Validating\ValidatingTrait;
  * @property CurrencyEnum $currency
  * @property float $limit
  * @property BalanceStateEnum $state
- * @property ?Carbon $active_at
- * @property ?Carbon $inactive_at
- * @property ?Carbon $locked_at
+ * @property ?Carbon $state_active_at
+ * @property ?Carbon $state_inactive_at
+ * @property ?Carbon $state_locked_at
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
  * Dependency:
@@ -76,9 +76,9 @@ class Balance extends Model
         'amount' => 0,
         'limit' => 0,
         'state' => BalanceStateEnum::Active,
-        'active_at' => null,
-        'inactive_at' => null,
-        'locked_at' => null,
+        'state_active_at' => null,
+        'state_inactive_at' => null,
+        'state_locked_at' => null,
     ];
 
     /**
@@ -92,9 +92,9 @@ class Balance extends Model
         'amount' => 'float',
         'currency' => CurrencyEnum::class,
         'state' => BalanceStateEnum::class,
-        'active_at' => 'datetime',
-        'inactive_at' => 'datetime',
-        'locked_at' => 'datetime',
+        'state_active_at' => 'datetime',
+        'state_inactive_at' => 'datetime',
+        'state_locked_at' => 'datetime',
     ];
 
     /**

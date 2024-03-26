@@ -24,11 +24,11 @@ use Watson\Validating\ValidatingTrait;
  * @property float $recipient_amount_after
  * @property string $state
  * @property string $description
- * @property ?Carbon $pending_at
- * @property ?Carbon $succeeded_at
- * @property ?Carbon $canceled_at
- * @property ?Carbon $refund_at
- * @property ?Carbon $errored_at
+ * @property ?Carbon $state_pending_at
+ * @property ?Carbon $state_succeeded_at
+ * @property ?Carbon $state_canceled_at
+ * @property ?Carbon $state_refund_at
+ * @property ?Carbon $state_errored_at
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
  */
@@ -93,11 +93,11 @@ class Operation extends Model
         'sender_amount_after' => null,
         'recipient_amount_before' => null,
         'recipient_amount_after' => null,
-        'pending_at' => null,
-        'succeeded_at' => null,
-        'canceled_at' => null,
-        'refund_at' => null,
-        'errored_at' => null,
+        'state_pending_at' => null,
+        'state_succeeded_at' => null,
+        'state_canceled_at' => null,
+        'state_refund_at' => null,
+        'state_errored_at' => null,
     ];
 
     /**
@@ -114,11 +114,11 @@ class Operation extends Model
         'recipient_amount_before' => 'float',
         'recipient_amount_after' => 'float',
         'state' => OperationStateEnum::class,
-        'pending_at' => 'datetime',
-        'succeeded_at' => 'datetime',
-        'canceled_at' => 'datetime',
-        'refund_at' => 'datetime',
-        'errored_at' => 'datetime',
+        'state_pending_at' => 'datetime',
+        'state_succeeded_at' => 'datetime',
+        'state_canceled_at' => 'datetime',
+        'state_refund_at' => 'datetime',
+        'state_errored_at' => 'datetime',
     ];
 
     /**

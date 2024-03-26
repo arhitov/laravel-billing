@@ -23,11 +23,11 @@ use Watson\Validating\ValidatingTrait;
  * @property ?string $issuer_country
  * @property ?string $issuer_name
  * @property SavedPaymentStateEnum $state
- * @property ?Carbon $active_at
- * @property ?Carbon $inactive_at
- * @property ?Carbon $insolvent_at
- * @property ?Carbon $invalid_at
- * @property ?Carbon $locked_at
+ * @property ?Carbon $state_active_at
+ * @property ?Carbon $state_inactive_at
+ * @property ?Carbon $state_insolvent_at
+ * @property ?Carbon $state_invalid_at
+ * @property ?Carbon $state_locked_at
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
  */
@@ -89,11 +89,11 @@ class SavedPayment extends Model
         'issuer_country' => null,
         'issuer_name' => null,
         'state' => SavedPaymentStateEnum::Created,
-        'active_at' => null,
-        'inactive_at' => null,
-        'insolvent_at' => null,
-        'invalid_at' => null,
-        'locked_at' => null,
+        'state_active_at' => null,
+        'state_inactive_at' => null,
+        'state_insolvent_at' => null,
+        'state_invalid_at' => null,
+        'state_locked_at' => null,
     ];
 
     /**
@@ -104,11 +104,11 @@ class SavedPayment extends Model
     protected $casts = [
         'card_expiry_at' => 'datetime',
         'state' => SavedPaymentStateEnum::class,
-        'active_at' => 'datetime',
-        'inactive_at' => 'datetime',
-        'insolvent_at' => 'datetime',
-        'invalid_at' => 'datetime',
-        'locked_at' => 'datetime',
+        'state_active_at' => 'datetime',
+        'state_inactive_at' => 'datetime',
+        'state_insolvent_at' => 'datetime',
+        'state_invalid_at' => 'datetime',
+        'state_locked_at' => 'datetime',
     ];
 
     /**

@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('currency', 5);
             $table->decimal('limit', 18, config('billing.rounding.precision'))->unsigned()->nullable()->default(0);
             $table->enum('state', ['active', 'inactive', 'locked'])->index();
-            $table->timestamp('active_at')->nullable()->index();
-            $table->timestamp('inactive_at')->nullable()->index();
-            $table->timestamp('locked_at')->nullable()->index();
+            $table->timestamp('state_active_at')->nullable()->index();
+            $table->timestamp('state_inactive_at')->nullable()->index();
+            $table->timestamp('state_locked_at')->nullable()->index();
             $table->timestamps();
 
             $table->unique(['owner_type', 'owner_id'], 'owner');

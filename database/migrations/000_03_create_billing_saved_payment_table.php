@@ -24,11 +24,11 @@ return new class extends Migration
             $table->string('issuer_country', 20)->nullable();
             $table->string('issuer_name')->nullable();
             $table->enum('state', ['created', 'active', 'inactive', 'insolvent', 'invalid', 'locked'])->index();
-            $table->timestamp('active_at')->nullable()->index();
-            $table->timestamp('inactive_at')->nullable()->index();
-            $table->timestamp('insolvent_at')->nullable()->index();
-            $table->timestamp('invalid_at')->nullable()->index();
-            $table->timestamp('locked_at')->nullable()->index();
+            $table->timestamp('state_active_at')->nullable()->index();
+            $table->timestamp('state_inactive_at')->nullable()->index();
+            $table->timestamp('state_insolvent_at')->nullable()->index();
+            $table->timestamp('state_invalid_at')->nullable()->index();
+            $table->timestamp('state_locked_at')->nullable()->index();
             $table->timestamps();
 
             $table->unique(['rebill_id', 'gateway'], 'payment_method_gateway');
