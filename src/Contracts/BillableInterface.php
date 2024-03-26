@@ -61,6 +61,8 @@ interface BillableInterface
 
     public function hasSubscription(string $key): bool;
 
+    public function hasSubscriptionActive(string $key): bool;
+
     public function makeSubscription(
         string  $key,
         Balance $balance = null,

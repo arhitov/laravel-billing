@@ -2,11 +2,18 @@
 
 namespace Arhitov\LaravelBilling\Tests\Feature;
 
+use Arhitov\LaravelBilling\Enums\SubscriptionStateEnum;
 use Arhitov\LaravelBilling\Models\Subscription;
+use Arhitov\LaravelBilling\Models\SubscriptionSetting;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
+use ErrorException;
+use Throwable;
 
 class SubscriptionTest extends FeatureTestCase
 {
+    /**
+     * @return void
+     */
     public function testMakeBaseSubscription()
     {
         $owner = $this->createOwner();
@@ -21,6 +28,7 @@ class SubscriptionTest extends FeatureTestCase
 
     /**
      * @depends testMakeBaseSubscription
+     * @return void
      */
     public function testMakeFullSubscription()
     {
@@ -41,17 +49,18 @@ class SubscriptionTest extends FeatureTestCase
         $subscription->setBalance($balance);
         $this->assertTrue($subscription->isValid(), 'The built subscription is valid.');
 
-        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have any subscriptions.');
+        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
     }
 
     /**
      * @depends testMakeFullSubscription
+     * @return void
      */
     public function testCreateSubscription()
     {
         $owner = $this->createOwner();
 
-        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have any subscriptions.');
+        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
 
         $subscription = $owner->createSubscription('first');
         $this->assertEquals(1, $owner->subscription()->count(), 'No subscription was created for the owner.');
@@ -64,13 +73,14 @@ class SubscriptionTest extends FeatureTestCase
 
     /**
      * @depends testCreateSubscription
+     * @return void
      */
     public function testCreateSubscriptionUseAmount()
     {
         $owner = $this->createOwner();
         $balance = $owner->getBalance();
 
-        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have any subscriptions.');
+        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
 
         $subscription = $owner->createSubscription('first', $balance, 123.23);
         $this->assertEquals(1, $owner->subscription()->count(), 'No subscription was created for the owner.');
@@ -83,15 +93,27 @@ class SubscriptionTest extends FeatureTestCase
 
     /**
      * @depends testCreateSubscription
+     * @return void
+     * @throws ErrorException
+     * @throws Throwable
      */
     public function testGetSubscription()
     {
         $owner = $this->createOwner();
 
-        $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have any subscriptions.');
+        $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have subscription.');
 
-        $owner->getSubscription('first');
+        $subscription = $owner->getSubscription('first');
 
         $this->assertTrue($owner->hasSubscription('first'), 'No subscription was created for the owner.');
+        $this->assertFalse($owner->hasSubscriptionActive('first'), 'The owner must not have active subscription.');
+
+        $this->assertNull($subscription->state_active_at, 'Datetime "state_active_at" should not be installed yet.');
+        $subscription->setState(SubscriptionStateEnum::Active);
+        $this->assertNotNull($subscription->state_active_at, 'The subscription status has not been changed.');
+
+        $this->assertFalse($owner->hasSubscriptionActive('first'), 'The owner does not have an active subscription.');
+        $subscription->saveOrFail();
+        $this->assertTrue($owner->hasSubscriptionActive('first'), 'The owner does not have an active subscription.');
     }
 }

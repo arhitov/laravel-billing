@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Models\Traits;
 
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
+use Arhitov\LaravelBilling\Enums\SubscriptionStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
 use Arhitov\LaravelBilling\Models\Balance;
@@ -114,7 +115,17 @@ trait ModelOwnerExpandTrait
 
     public function hasSubscription(string $key): bool
     {
-        return $this->subscription()->where('key', '=', $key)->exists();
+        return $this->subscription()
+            ->where('key', '=', $key)
+            ->exists();
+    }
+
+    public function hasSubscriptionActive(string $key): bool
+    {
+        return $this->subscription()
+            ->where('key', '=', $key)
+            ->where('state', '=', SubscriptionStateEnum::Active->value)
+            ->exists();
     }
 
     public function makeSubscription(

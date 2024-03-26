@@ -17,7 +17,7 @@ class SubscriptionEventTest extends FeatureTestCase
     {
         $owner = $this->createOwner();
 
-        $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have any subscriptions.');
+        $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have subscription.');
 
         $owner->getSubscription('first');
 
