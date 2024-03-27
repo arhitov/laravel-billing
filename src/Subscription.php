@@ -18,7 +18,7 @@ class Subscription
         protected string $description,
     )
     {
-        $this->subscription = $balance->owner->getSubscriptionOrNull($subscriptionSetting->getKey()) ??
+        $this->subscription = $balance->owner->getSubscription($subscriptionSetting->getKey()) ??
             $balance->owner->makeSubscription(
                 $subscriptionSetting->getKey(),
                 $balance,

@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Contracts;
 
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
+use Arhitov\LaravelBilling\Exceptions;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\SavedPayment;
 use Arhitov\LaravelBilling\Models\Subscription;
@@ -25,9 +26,16 @@ interface BillableInterface
      */
     public function balance(): MorphMany;
 
-    public function getBalance(string $key = 'main'): Balance;
+    public function getBalance(string $key = 'main'): ?Balance;
 
-    public function getBalanceOrNull(string $key = 'main'): ?Balance;
+    /**
+     * @param string $key
+     * @return Balance
+     * @throws Exceptions\BalanceNotFoundException
+     */
+    public function getBalanceOrFail(string $key = 'main'): Balance;
+
+    public function getBalanceOrCreate(string $key = 'main'): Balance;
 
     public function hasBalance(string $key = 'main'): bool;
 
@@ -55,9 +63,16 @@ interface BillableInterface
      */
     public function subscription(): MorphMany;
 
-    public function getSubscription(string $key): Subscription;
+    public function getSubscription(string $key): ?Subscription;
 
-    public function getSubscriptionOrNull(string $key): ?Subscription;
+    /**
+     * @param string $key
+     * @return Subscription
+     * @throws Exceptions\SubscriptionNotFoundException
+     */
+    public function getSubscriptionOrFail(string $key): Subscription;
+
+    public function getSubscriptionOrCreate(string $key): Subscription;
 
     public function hasSubscription(string $key): bool;
 

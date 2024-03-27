@@ -6,6 +6,8 @@ use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\SubscriptionStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
+use Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException;
+use Arhitov\LaravelBilling\Exceptions\SubscriptionNotFoundException;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\SavedPayment;
 use Arhitov\LaravelBilling\Models\Subscription;
@@ -39,16 +41,25 @@ trait ModelOwnerExpandTrait
         return $this->morphMany(Balance::class, 'owner');
     }
 
-    public function getBalance(string $key = 'main'): Balance
+    public function getBalance(string $key = 'main'): ?Balance
     {
-        return $this->getBalanceOrNull() ?? $this->createBalance(key: $key);
+        /** @var Balance|null $model */
+        $model = $this->balance()->where('key', '=', $key)->first();
+        return $model;
     }
 
-    public function getBalanceOrNull(string $key = 'main'): ?Balance
+    public function getBalanceOrFail(string $key = 'main'): Balance
     {
-        /** @var Balance|null $balance */
-        $balance = $this->balance()->where('key', '=', $key)->first();
-        return $balance;
+        $model = $this->getBalance($key);
+        if (is_null($model)) {
+            throw new BalanceNotFoundException($key);
+        }
+        return $model;
+    }
+
+    public function getBalanceOrCreate(string $key = 'main'): Balance
+    {
+        return $this->getBalance($key) ?? $this->createBalance(key: $key);
     }
 
     public function hasBalance(string $key = 'main'): bool
@@ -102,16 +113,25 @@ trait ModelOwnerExpandTrait
         return $this->morphMany(Subscription::class, 'owner');
     }
 
-    public function getSubscription(string $key): Subscription
+    public function getSubscription(string $key): ?Subscription
     {
-        return $this->getSubscriptionOrNull($key) ?? $this->createSubscription(key: $key);
+        /** @var Subscription|null $model */
+        $model = $this->subscription()->where('key', '=', $key)->first();
+        return $model;
     }
 
-    public function getSubscriptionOrNull(string $key): ?Subscription
+    public function getSubscriptionOrFail(string $key = 'main'): Subscription
     {
-        /** @var Subscription|null $subscription */
-        $subscription = $this->subscription()->where('key', '=', $key)->first();
-        return $subscription;
+        $model = $this->getSubscription($key);
+        if (is_null($model)) {
+            throw new SubscriptionNotFoundException($key);
+        }
+        return $model;
+    }
+
+    public function getSubscriptionOrCreate(string $key = 'main'): Subscription
+    {
+        return $this->getSubscription($key) ?? $this->createSubscription(key: $key);
     }
 
     public function hasSubscription(string $key): bool

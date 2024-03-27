@@ -32,7 +32,7 @@ class ModelUserRootTest extends FeatureTestCase
     public function testBalance()
     {
         $owner = new UserRoot;
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
         $this->assertEquals(
             Balance::class,
             get_class($balance),
@@ -48,10 +48,10 @@ class ModelUserRootTest extends FeatureTestCase
     public function testRootBalanceIncreaseTransferUsageException()
     {
         $senderOwner = $this->createOwner();
-        $senderBalance = $senderOwner->getBalance();
+        $senderBalance = $senderOwner->getBalanceOrCreate();
 
         $recipientOwner = $this->createOwner();
-        $recipientBalance = $recipientOwner->getBalance();
+        $recipientBalance = $recipientOwner->getBalanceOrCreate();
 
         $this->expectException(TransferUsageException::class);
         new Increase(
@@ -69,10 +69,10 @@ class ModelUserRootTest extends FeatureTestCase
     public function testRootBalanceDecreaseTransferUsageException()
     {
         $senderOwner = $this->createOwner();
-        $senderBalance = $senderOwner->getBalance();
+        $senderBalance = $senderOwner->getBalanceOrCreate();
 
         $recipientOwner = $this->createOwner();
-        $recipientBalance = $recipientOwner->getBalance();
+        $recipientBalance = $recipientOwner->getBalanceOrCreate();
 
         $this->expectException(TransferUsageException::class);
         new Decrease(

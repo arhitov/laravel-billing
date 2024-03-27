@@ -15,7 +15,7 @@ class ModelSavedPaymentTest extends FeatureTestCase
     public function testSaveForBalance()
     {
         $owner = $this->createOwner();
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
 
         $this->assertEquals(0, $balance->savedPayment()->count(), 'There should be no saved methods at this stage.');
         $this->assertEquals(0, $owner->getPaymentMethodList()->count(), 'There should be no saved methods at this stage.');
@@ -44,7 +44,7 @@ class ModelSavedPaymentTest extends FeatureTestCase
      */
     public function testSaveForBalance2()
     {
-        $savedPayment = $this->createOwner()->getBalance()->addPaymentMethodsOrFail([
+        $savedPayment = $this->createOwner()->getBalanceOrCreate()->addPaymentMethodsOrFail([
             'rebill_id' => 'qwe-qwe-qwe-qwe',
             'gateway' => 'Yandex',
             'state' => SavedPaymentStateEnum::Active,

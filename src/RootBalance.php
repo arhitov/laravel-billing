@@ -24,6 +24,6 @@ class RootBalance
 
     public function getBalance(): Balance
     {
-        return $this->getOwner()->getBalance();
+        return $this->getOwner()->getBalanceOrCreate();
     }
 }

@@ -72,7 +72,6 @@ class Balance extends Model
      * @var array
      */
     protected $attributes = [
-        'key' => 'main',
         'amount' => 0,
         'limit' => 0,
         'state' => BalanceStateEnum::Active,

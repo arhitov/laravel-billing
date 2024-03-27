@@ -20,7 +20,7 @@ class BalanceEventTest extends FeatureTestCase
 
         $this->assertFalse($owner->hasBalance('test'), 'The owner must not have any balance.');
 
-        $owner->getBalance('test');
+        $owner->getBalanceOrCreate('test');
 
         $this->assertTrue($owner->hasBalance('test'), 'No balance was created for the owner.');
     }
@@ -44,7 +44,7 @@ class BalanceEventTest extends FeatureTestCase
     {
         Event::fake();
 
-        $this->createOwner()->getBalance('first');
+        $this->createOwner()->getBalanceOrCreate('first');
 
         Event::assertDispatched(Events\BalanceCreatedEvent::class);
     }

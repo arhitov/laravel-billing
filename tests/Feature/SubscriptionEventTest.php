@@ -19,7 +19,7 @@ class SubscriptionEventTest extends FeatureTestCase
 
         $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have subscription.');
 
-        $owner->getSubscription('first');
+        $owner->getSubscriptionOrCreate('first');
 
         $this->assertTrue($owner->hasSubscription('first'), 'No subscription was created for the owner.');
     }
@@ -43,7 +43,7 @@ class SubscriptionEventTest extends FeatureTestCase
     {
         Event::fake();
 
-        $this->createOwner()->getSubscription('first');
+        $this->createOwner()->getSubscriptionOrCreate('first');
 
         Event::assertDispatched(Events\SubscriptionCreatedEvent::class);
     }

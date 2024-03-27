@@ -6,8 +6,6 @@ use Arhitov\LaravelBilling\Decrease;
 use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Exceptions;
-use Arhitov\LaravelBilling\Exceptions\BalanceException;
-use Arhitov\LaravelBilling\Exceptions\TransferUsageException;
 use Arhitov\LaravelBilling\Increase;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
 use Arhitov\LaravelBilling\Transfer;
@@ -19,21 +17,21 @@ class ExceptionsTest extends FeatureTestCase
      * A simple test, performed in another file.
      * This is only there to avoid checking whether exceptions work if a simple test fails.
      * @return void
-     * @throws TransferUsageException
+     * @throws Exceptions\TransferUsageException
      */
     public function testSimple()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
 
         $increase = new Increase(
             $ownerBalance,
             100,
         );
 
-        $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(0, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
         $this->assertTrue($increase->execute(), 'Operation increase failed');
-        $this->assertEquals(100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(100, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
     }
 
     /**
@@ -43,7 +41,7 @@ class ExceptionsTest extends FeatureTestCase
     public function testBalanceEmptyException()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
         $ownerBalance->limit = 100;
 
         $decrease = new Decrease(
@@ -69,7 +67,7 @@ class ExceptionsTest extends FeatureTestCase
     public function testBalanceNotAllowIncreaseException()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
 
         $decrease = new Increase(
             $ownerBalance,
@@ -95,7 +93,7 @@ class ExceptionsTest extends FeatureTestCase
     public function testBalanceNotAllowDecreaseException()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
         $ownerBalance->limit = 100;
 
         $decrease = new Decrease(
@@ -117,17 +115,17 @@ class ExceptionsTest extends FeatureTestCase
 
     /**
      * @depends testSimple
-     * @throws BalanceException
+     * @throws Exceptions\BalanceException
      */
     public function testOperationCurrencyNotMatchException()
     {
         $senderOwner = $this->createOwner();
-        $senderBalance = $senderOwner->getBalance();
+        $senderBalance = $senderOwner->getBalanceOrCreate();
         $senderBalance->currency = CurrencyEnum::RUB;
         $senderBalance->limit = null;
 
         $recipientOwner = $this->createOwner();
-        $recipientBalance = $recipientOwner->getBalance();
+        $recipientBalance = $recipientOwner->getBalanceOrCreate();
         $recipientBalance->currency = CurrencyEnum::RUB;
         $recipientBalance->limit = null;
 
@@ -154,7 +152,7 @@ class ExceptionsTest extends FeatureTestCase
     public function testOperationAlreadyCreatedException()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
 
         $increase = new Increase(
             $ownerBalance,

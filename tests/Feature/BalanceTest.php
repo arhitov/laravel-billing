@@ -21,9 +21,13 @@ class BalanceTest extends FeatureTestCase
         $owner = $this->createOwner();
         /** @var Balance $balance */
         $balance = $owner->balance()->create([
+            'key' => 'test',
             'amount' => 123.23,
             'currency' => CurrencyEnum::RUB,
         ]);
+
+        $this->assertTrue($balance->exists, 'No balance was created.');
+
         $this->assertEquals(
             Balance::class,
             get_class($balance),
@@ -47,7 +51,7 @@ class BalanceTest extends FeatureTestCase
             'For owner2 there is already a balance.',
         );
         $this->assertFalse($owner2->hasBalance('test'), 'For owner2 there is already a balance "test".');
-        $balance2 = $owner2->getBalance('test');
+        $balance2 = $owner2->getBalanceOrCreate('test');
 
         $this->assertInstanceOf(Balance::class, $balance2, 'Created balance is not ' . Balance::class);
         $this->assertTrue($owner2->hasBalance('test'), 'For owner2 there is not exist balance "test".');
@@ -60,12 +64,33 @@ class BalanceTest extends FeatureTestCase
 
     /**
      * @depends testCreateBalance
+     * @return void
+     */
+    public function testGetBalance()
+    {
+        $balanceKey = 'test';
+        $owner = $this->createOwner();
+        /** @var Balance|null $balance */
+        $balance = $owner->getBalance($balanceKey);
+
+        $this->assertNull($balance, 'Balance shouldn\'t exist');
+
+        $balance = $owner->getBalanceOrCreate($balanceKey);
+        $this->assertInstanceOf(Balance::class, $balance, 'Created balance is not ' . Balance::class);
+        $this->assertEquals($balanceKey, $balance->key, 'The "key" field has an incorrect value.');
+
+        $balance = $owner->getBalance($balanceKey);
+        $this->assertInstanceOf(Balance::class, $balance, 'Created balance is not ' . Balance::class);
+    }
+
+    /**
+     * @depends testCreateBalance
      * @throws ErrorException
      */
     public function testChangeState()
     {
         $owner = $this->createOwner();
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
         $this->assertNotNull($balance->state_active_at, 'Datetime "state_active_at" not set.');
         $this->assertNull($balance->state_locked_at, 'Datetime "state_locked_at" should not be installed yet.');
 
@@ -93,12 +118,12 @@ class BalanceTest extends FeatureTestCase
     {
         $owner = $this->createOwner();
         $increase = new Increase(
-            $owner->getBalance(),
+            $owner->getBalanceOrCreate(),
             100,
         );
         $operation = $increase->getOperation();
 
-        $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(0, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
 
         $this->assertTrue($increase->isAllow(), 'Not allow increase');
         $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
@@ -108,7 +133,7 @@ class BalanceTest extends FeatureTestCase
         $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
-        $this->assertEquals(100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(100, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
     }
 
     /**
@@ -123,7 +148,7 @@ class BalanceTest extends FeatureTestCase
 
         $owner = $this->createOwner();
         $increase = new Increase(
-            $owner->getBalance(),
+            $owner->getBalanceOrCreate(),
             100,
             description: $descriptionTest
         );
@@ -144,7 +169,7 @@ class BalanceTest extends FeatureTestCase
     public function testDecreaseBalance()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
         $ownerBalance->limit = null;
 
         $decrease = new Decrease(
@@ -153,7 +178,7 @@ class BalanceTest extends FeatureTestCase
         );
         $operation = $decrease->getOperation();
 
-        $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(0, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
 
         $this->assertTrue($decrease->isAllow(), 'Not allow increase');
         $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
@@ -163,7 +188,7 @@ class BalanceTest extends FeatureTestCase
         $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
-        $this->assertEquals(-100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(-100, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
     }
 
     /**
@@ -172,11 +197,11 @@ class BalanceTest extends FeatureTestCase
     public function testTransferBalance()
     {
         $senderOwner = $this->createOwner();
-        $senderBalance = $senderOwner->getBalance();
+        $senderBalance = $senderOwner->getBalanceOrCreate();
         $senderBalance->limit = null;
 
         $recipientOwner = $this->createOwner();
-        $recipientBalance = $recipientOwner->getBalance();
+        $recipientBalance = $recipientOwner->getBalanceOrCreate();
         $recipientBalance->limit = null;
 
         $decrease = new Transfer(
@@ -186,8 +211,8 @@ class BalanceTest extends FeatureTestCase
         );
         $operation = $decrease->getOperation();
 
-        $this->assertEquals(0, $senderOwner->getBalance()->amount, 'The sender has an incorrect balance.');
-        $this->assertEquals(0, $recipientOwner->getBalance()->amount, 'The recipient has an incorrect balance.');
+        $this->assertEquals(0, $senderOwner->getBalance()?->amount, 'The sender has an incorrect balance.');
+        $this->assertEquals(0, $recipientOwner->getBalance()?->amount, 'The recipient has an incorrect balance.');
 
         $this->assertTrue($decrease->isAllow(), 'Not allow increase');
         $this->assertNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is not null.');
@@ -197,7 +222,7 @@ class BalanceTest extends FeatureTestCase
         $this->assertNotNull($operation->state_succeeded_at, 'Temporary meta "state_succeeded_at" is null.');
         $this->assertEquals(OperationStateEnum::Succeeded, $operation->state, 'Status operation incorrect.');
 
-        $this->assertEquals(-100, $senderOwner->getBalance()->amount, 'The sender has an incorrect balance.');
-        $this->assertEquals(100, $recipientOwner->getBalance()->amount, 'The recipient has an incorrect balance.');
+        $this->assertEquals(-100, $senderOwner->getBalance()?->amount, 'The sender has an incorrect balance.');
+        $this->assertEquals(100, $recipientOwner->getBalance()?->amount, 'The recipient has an incorrect balance.');
     }
 }

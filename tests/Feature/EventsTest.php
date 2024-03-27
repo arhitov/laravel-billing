@@ -20,16 +20,16 @@ class EventsTest extends FeatureTestCase
     public function testSimple()
     {
         $owner = $this->createOwner();
-        $ownerBalance = $owner->getBalance();
+        $ownerBalance = $owner->getBalanceOrCreate();
 
         $increase = new Increase(
             $ownerBalance,
             100,
         );
 
-        $this->assertEquals(0, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(0, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
         $this->assertTrue($increase->execute(), 'Operation increase failed');
-        $this->assertEquals(100, $owner->getBalance()->amount, 'The owner has an incorrect balance.');
+        $this->assertEquals(100, $owner->getBalance()?->amount, 'The owner has an incorrect balance.');
     }
 
     /**
@@ -41,7 +41,7 @@ class EventsTest extends FeatureTestCase
     {
         Event::fake();
 
-        $balance = $this->createOwner()->getBalance();
+        $balance = $this->createOwner()->getBalanceOrCreate();
 
         (new Increase(
             $balance,
@@ -60,7 +60,7 @@ class EventsTest extends FeatureTestCase
     {
         Event::fake();
 
-        $balance = $this->createOwner()->getBalance();
+        $balance = $this->createOwner()->getBalanceOrCreate();
         $balance->limit = null;
 
         (new Decrease(

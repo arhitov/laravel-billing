@@ -21,7 +21,7 @@ class ModelOperationTest extends FeatureTestCase
     {
         $owner = $this->createOwner();
         $increase = new Increase(
-            $owner->getBalance(),
+            $owner->getBalanceOrCreate(),
             100,
         );
         $operation = $increase->getOperation();
@@ -41,7 +41,7 @@ class ModelOperationTest extends FeatureTestCase
         $operationUUID = Str::orderedUuid()->toString();
 
         $increase = new Increase(
-            $owner->getBalance(),
+            $owner->getBalanceOrCreate(),
             100,
             operation_identifier: $operationIdentifier,
             operation_uuid: $operationUUID,
@@ -65,7 +65,7 @@ class ModelOperationTest extends FeatureTestCase
         $operationUUID = Str::orderedUuid()->toString();
 
         $increase = new Decrease(
-            $owner->getBalance(),
+            $owner->getBalanceOrCreate(),
             100,
             operation_identifier: $operationIdentifier,
             operation_uuid: $operationUUID,

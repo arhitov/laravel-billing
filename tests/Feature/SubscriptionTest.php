@@ -35,7 +35,7 @@ class SubscriptionTest extends FeatureTestCase
     public function testMakeFullSubscription()
     {
         $owner = $this->createOwner();
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
 
         $subscription = $owner->makeSubscription(
             'first',
@@ -80,7 +80,7 @@ class SubscriptionTest extends FeatureTestCase
     public function testCreateSubscriptionUseAmount()
     {
         $owner = $this->createOwner();
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
 
         $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
 
@@ -103,9 +103,12 @@ class SubscriptionTest extends FeatureTestCase
     {
         $owner = $this->createOwner();
 
+        $subscription = $owner->getSubscription('first');
+        $this->assertNull($subscription, 'Subscription must not exist.');
+
         $this->assertFalse($owner->hasSubscription('first'), 'The owner must not have subscription.');
 
-        $subscription = $owner->getSubscription('first');
+        $subscription = $owner->getSubscriptionOrCreate('first');
 
         $this->assertTrue($owner->hasSubscription('first'), 'No subscription was created for the owner.');
         $this->assertFalse($owner->hasSubscriptionActive('first'), 'The owner must not have active subscription.');
@@ -136,7 +139,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriptionAmount = 123.23;
 
         $owner = $this->createOwner();
-        $balance = $owner->getBalance();
+        $balance = $owner->getBalanceOrCreate();
         $balance->limit = null;
 
         $subscriptionSetting = new Models\SubscriptionSetting(
