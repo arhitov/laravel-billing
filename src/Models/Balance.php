@@ -4,6 +4,7 @@ namespace Arhitov\LaravelBilling\Models;
 
 use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
+use Arhitov\LaravelBilling\Contracts\BillableInterface;
 use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
@@ -11,10 +12,13 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Cache;
 use Watson\Validating\ValidatingTrait;
 
 /**
  * @property int $id
+ * @property string $owner_type
+ * @property int $owner_id
  * @property string $key
  * @property float $amount
  * @property CurrencyEnum $currency
@@ -151,5 +155,61 @@ class Balance extends Model
         /** @var SavedPayment $savedPayment */
         $savedPayment = $this->savedPayment()->create($attributes);
         return $savedPayment;
+    }
+
+    public function putCacheAmount(): void
+    {
+        $ownerCacheKey = $this->getSettingCacheAmount();
+        if ($ownerCacheKey) {
+            Cache::put($ownerCacheKey['key'], $this->amount, $ownerCacheKey['ttl']);
+        }
+    }
+
+    public function deleteCacheAmount(): void
+    {
+        $ownerCacheKey = $this->getSettingCacheAmount();
+        if ($ownerCacheKey) {
+            Cache::delete($ownerCacheKey['key']);
+        }
+    }
+
+    public static function getCacheAmount(BillableInterface $owner, string $key): ?float
+    {
+        $cacheKeySetting = self::makeCacheKeySetting($owner, $key);
+        if (is_null($cacheKeySetting)) {
+            return null;
+        }
+
+        return Cache::get($cacheKeySetting['key'], null);
+    }
+
+    public function getSettingCacheAmount(): ?array
+    {
+        if (! $this->exists) {
+            return null;
+        }
+
+        $cacheKeySetting = self::makeCacheKeySetting($this->owner, $this->key);
+        if (is_null($cacheKeySetting)) {
+            return null;
+        }
+
+        return $cacheKeySetting;
+    }
+
+    public static function makeCacheKeySetting(BillableInterface $owner, string $key): ?array
+    {
+        $ownerCacheKey = config('billing.cache.keys.owner_balance_amount');
+        if (empty($ownerCacheKey)) {
+            return null;
+        }
+
+        $ownerType = get_class($owner);
+        $ownerId = $owner->id;
+
+        return [
+            'key' => ($ownerCacheKey['prefix'] ?? 'owner_balance_amount') . ':' . md5($ownerType . '.' . $ownerId) . ':' . $key,
+            'ttl' => Carbon::parse($ownerCacheKey['ttl'] ?? '10 minutes')
+        ];
     }
 }

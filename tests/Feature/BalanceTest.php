@@ -13,6 +13,7 @@ use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
 use Arhitov\LaravelBilling\Transfer;
 use ErrorException;
+use Illuminate\Support\Facades\Cache;
 
 class BalanceTest extends FeatureTestCase
 {
@@ -160,6 +161,64 @@ class BalanceTest extends FeatureTestCase
         $this->assertNotEquals($descriptionTest, $operation->description, 'The operation description contains the old value.');
         $this->assertEquals($descriptionTest2, $operation->description, 'The operation description contains an incorrect value.');
 
+    }
+
+    /**
+     * @11depends testIncreaseDescriptionBalance
+     * @return void
+     * @throws TransferUsageException
+     */
+    public function testGetBalanceCacheAmount()
+    {
+        $balanceAmount = 100.0;
+        $balanceAmount2 = 200.0;
+        $owner = $this->createOwner();
+
+        $this->assertNull($owner->getBalance(), 'There must be no balance.');
+        $this->assertEquals(0, $owner->getBalanceCacheAmount(), 'Balance must be empty.');
+
+        $balance = $owner->getBalanceOrCreate();
+
+        (new Increase(
+            $balance,
+            $balanceAmount,
+        ))->execute();
+
+        $balanceCacheKeySetting = $balance->getSettingCacheAmount();
+        $this->assertIsArray($balanceCacheKeySetting);
+
+        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
+        $this->assertTrue(Cache::has($balanceCacheKeySetting['key']), 'Cache key not found.');
+        $this->assertEquals($balanceAmount, Cache::get($balanceCacheKeySetting['key']), 'Balance in cache contains incorrect value.');
+
+        Cache::put($balanceCacheKeySetting['key'], $balanceAmount2, $balanceCacheKeySetting['ttl']);
+
+        $this->assertEquals($balanceAmount2, Cache::get($balanceCacheKeySetting['key']), 'Balance in cache contains incorrect value.');
+        $this->assertEquals($balanceAmount2, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
+
+        $billingConfigBefore = config('billing');
+
+        $billingConfig = $billingConfigBefore;
+        $billingConfig['cache']['keys']['owner_balance_amount'] = null;
+        config(['billing' => $billingConfig]);
+
+        $this->assertNull(config('billing.cache.keys.owner_balance_amount', '-1'), 'Fail change config.');
+        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance uses cache.');
+
+        $billingConfig['cache'] = null;
+        config(['billing' => $billingConfig]);
+        $this->assertArrayNotHasKey('owner_balance_amount', config('billing.cache.keys', []), 'Fail change config.');
+        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance uses cache.');
+
+        config(['billing' => $billingConfigBefore]);
+        $this->assertEquals($billingConfigBefore, config('billing'), 'ATTENTION!!! Failed to return configuration state!');
+
+        $this->assertEquals($balanceAmount2, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
+
+        Cache::delete($balanceCacheKeySetting['key']);
+        $this->assertFalse(Cache::has($balanceCacheKeySetting['key']), 'Cache key found.');
+
+        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
     }
 
     /**

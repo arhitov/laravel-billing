@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ */
 trait ModelOwnerExpandTrait
 {
     public static function bootDeleteCascadeBalance(): void
@@ -78,6 +81,20 @@ trait ModelOwnerExpandTrait
         // Method boot::created in model Balance doesn't start in this case. Call manually.
         event(new BalanceCreatedEvent($balance));
         return $balance;
+    }
+
+    public function getBalanceCacheAmount(string $key = 'main'): float
+    {
+        $amount = Balance::getCacheAmount($this, $key);
+        if (is_null($amount)) {
+            $balance = $this->getBalance($key);
+            $amount = $balance?->amount ?? null;
+            if (! is_null($amount)) {
+                $balance->putCacheAmount();
+            }
+        }
+
+        return $amount ?? 0;
     }
 
     /**

@@ -62,6 +62,19 @@ return [
     ],
 
     /**
+     * Using cache
+     * array|null
+     */
+    'cache' => [
+        'keys' => [
+            'owner_balance_amount' => [
+                'prefix' => 'owner_balance_amount',
+                'ttl' => '10 minutes',
+            ],
+        ],
+    ],
+
+    /**
      * Rounding.
      */
     'rounding' => [

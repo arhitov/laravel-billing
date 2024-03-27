@@ -2,8 +2,11 @@
 
 namespace Arhitov\LaravelBilling\Tests\Feature;
 
+use Arhitov\LaravelBilling\Decrease;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Events;
+use Arhitov\LaravelBilling\Exceptions\TransferUsageException;
+use Arhitov\LaravelBilling\Increase;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
 use Illuminate\Support\Facades\Event;
 
@@ -62,5 +65,79 @@ class BalanceEventTest extends FeatureTestCase
         ]);
 
         Event::assertNotDispatched(Events\BalanceCreatedEvent::class);
+    }
+
+    /**
+     * @depends testCreateBalance
+     * @return void
+     * @throws TransferUsageException
+     */
+    public function testBalanceIncreaseEvent()
+    {
+        Event::fake();
+
+        (new Increase(
+            $this->createOwner()->getBalanceOrCreate(),
+            100,
+        ))->execute();
+
+        Event::assertDispatched(Events\BalanceIncreaseEvent::class);
+    }
+
+    /**
+     * @depends testCreateBalance
+     * @return void
+     * @throws TransferUsageException
+     */
+    public function testBalanceDecreaseEvent()
+    {
+        Event::fake();
+
+        $balance = $this->createOwner()->getBalanceOrCreate();
+        $balance->limit = null;
+
+        (new Decrease(
+            $balance,
+            100,
+        ))->execute();
+
+        Event::assertDispatched(Events\BalanceDecreaseEvent::class);
+    }
+
+    /**
+     * @depends testBalanceIncreaseEvent
+     * @return void
+     * @throws TransferUsageException
+     */
+    public function testBalanceChangedEvent()
+    {
+        Event::fake();
+
+        (new Increase(
+            $this->createOwner()->getBalanceOrCreate(),
+            100,
+        ))->execute();
+
+        Event::assertNotDispatched(Events\BalanceChangedEvent::class);
+    }
+
+    /**
+     * @depends testBalanceDecreaseEvent
+     * @return void
+     * @throws TransferUsageException
+     */
+    public function testBalanceChangedEvent2()
+    {
+        Event::fake();
+
+        $balance = $this->createOwner()->getBalanceOrCreate();
+        $balance->limit = null;
+
+        (new Decrease(
+            $balance,
+            100,
+        ))->execute();
+
+        Event::assertNotDispatched(Events\BalanceChangedEvent::class);
     }
 }

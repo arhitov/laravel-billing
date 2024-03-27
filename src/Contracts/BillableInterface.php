@@ -41,6 +41,8 @@ interface BillableInterface
 
     public function createBalance(CurrencyEnum $currency = null, string $key = 'main'): Balance;
 
+    public function getBalanceCacheAmount(string $key = 'main'): float;
+
     /**
      * ********************
      * *** SavedPayment ***

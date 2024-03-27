@@ -22,4 +22,9 @@ class PackageServiceProvider extends ServiceProvider
             'billing-migrations'
         );
     }
+
+    public function register(): void
+    {
+        $this->app->register(EventServiceProvider::class);
+    }
 }

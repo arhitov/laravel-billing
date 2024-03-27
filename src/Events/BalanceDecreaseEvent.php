@@ -2,6 +2,6 @@
 
 namespace Arhitov\LaravelBilling\Events;
 
-class BalanceDecreaseEvent extends BalanceEvent
+class BalanceDecreaseEvent extends BalanceChangedEvent
 {
 }
