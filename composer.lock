@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/laravel-helpers.git",
-                "reference": "141586047ab06630620f91d069108c8671b7d4ad"
+                "reference": "be8ea55a8287d4f7031c7740e153f8569786f182"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/laravel-helpers/zipball/141586047ab06630620f91d069108c8671b7d4ad",
-                "reference": "141586047ab06630620f91d069108c8671b7d4ad",
+                "url": "https://api.github.com/repos/arhitov/laravel-helpers/zipball/be8ea55a8287d4f7031c7740e153f8569786f182",
+                "reference": "be8ea55a8287d4f7031c7740e153f8569786f182",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "issues": "https://github.com/arhitov/laravel-helpers/issues",
                 "source": "https://github.com/arhitov/laravel-helpers/tree/main"
             },
-            "time": "2024-03-26T17:44:15+00:00"
+            "time": "2024-03-27T10:48:20+00:00"
         },
         {
             "name": "arhitov/laravel-package-helpers",
