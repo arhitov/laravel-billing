@@ -77,6 +77,8 @@ class ModelSubscriptionUnitTest extends TestCase
         $this->assertTrue($validator->fails(), 'Error validator');
         $errorsList = $validator->errors()->all() ?? [];
 
+        $this->assertCount(6, $errorsList, 'The number of errors does not match the number being checked.');
+        $this->assertContains('The uuid field is required.', $errorsList, 'The "uuid" not validating.');
         $this->assertContains('The key field is required.', $errorsList, 'The "key" not validating.');
         $this->assertContains('The balance id field must be an integer.', $errorsList, 'The "balance_id" not validating.');
         $this->assertContains('The selected currency is invalid.', $errorsList, 'The "currency" not validating.');

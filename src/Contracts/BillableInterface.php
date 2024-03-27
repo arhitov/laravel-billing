@@ -69,6 +69,7 @@ interface BillableInterface
         float   $amount = null,
         Carbon  $beginning_at = null,
         Carbon  $expiry_at = null,
+        string  $uuid = null,
     ): Subscription;
 
     public function createSubscription(
@@ -77,5 +78,6 @@ interface BillableInterface
         float   $amount = null,
         Carbon  $beginning_at = null,
         Carbon  $expiry_at = null,
+        string  $uuid = null,
     ): Subscription;
 }

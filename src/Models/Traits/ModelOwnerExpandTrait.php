@@ -12,6 +12,7 @@ use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait ModelOwnerExpandTrait
 {
@@ -129,19 +130,21 @@ trait ModelOwnerExpandTrait
     }
 
     public function makeSubscription(
-        string $key,
+        string  $key,
         Balance $balance = null,
-        float $amount = null,
-        Carbon $beginning_at = null,
-        Carbon $expiry_at = null,
+        float   $amount = null,
+        Carbon  $beginning_at = null,
+        Carbon  $expiry_at = null,
+        string  $uuid = null,
     ): Subscription
     {
         /** @var Subscription $subscription */
         $subscription = $this->subscription()->make([
-            'key' => $key,
-            'amount' => $amount,
+            'uuid' =>         $uuid ?? Str::orderedUuid()->toString(),
+            'key' =>          $key,
+            'amount' =>       $amount,
             'beginning_at' => $beginning_at,
-            'expiry_at' => $expiry_at,
+            'expiry_at' =>    $expiry_at,
         ]);
         if ($balance) {
             $subscription->setBalance($balance);
@@ -150,14 +153,15 @@ trait ModelOwnerExpandTrait
     }
 
     public function createSubscription(
-        string $key,
+        string  $key,
         Balance $balance = null,
-        float $amount = null,
-        Carbon $beginning_at = null,
-        Carbon $expiry_at = null,
+        float   $amount = null,
+        Carbon  $beginning_at = null,
+        Carbon  $expiry_at = null,
+        string  $uuid = null,
     ): Subscription
     {
-        $subscription = $this->makeSubscription($key, $balance, $amount, $beginning_at, $expiry_at);
+        $subscription = $this->makeSubscription($key, $balance, $amount, $beginning_at, $expiry_at, $uuid);
         $subscription->saveOrFail();
         // Method boot::created in model Balance doesn't start in this case. Call manually.
         event(new SubscriptionCreatedEvent($subscription));

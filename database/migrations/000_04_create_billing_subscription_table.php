@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create(config('billing.database.tables.subscription'), static function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('owner_type');
             $table->unsignedBigInteger('owner_id');
             $table->string('key')->index()->comment('Unique subscription name on your system.');

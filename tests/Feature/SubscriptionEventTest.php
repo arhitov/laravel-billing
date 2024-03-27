@@ -56,7 +56,8 @@ class SubscriptionEventTest extends FeatureTestCase
         Event::fake();
 
         $this->createOwner()->subscription()->create([
-            'key' => 'first',
+            'uuid' => '123e4567-e89b-12d3-a456-426655440000',
+            'key'  => 'first',
         ]);
 
         Event::assertNotDispatched(Events\SubscriptionCreatedEvent::class);
