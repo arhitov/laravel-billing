@@ -19,7 +19,7 @@
         "arhitov/laravel-helpers": "dev-main",
         "arhitov/laravel-package-helpers": "dev-main",
         "laravel/framework": "^10",
-        "watson/validating": "^8.2"
+        "watson/validating": "^8.1"
     },
     "require-dev": {
         "orchestra/testbench": "*",
