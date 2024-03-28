@@ -9,6 +9,7 @@ use Arhitov\LaravelBilling\Models\SavedPayment;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 interface BillableInterface
@@ -79,6 +80,10 @@ interface BillableInterface
     public function hasSubscription(string $key): bool;
 
     public function hasSubscriptionActive(string $key): bool;
+
+    public function listSubscriptionActive(): Collection;
+
+    public function builderSubscriptionActive(): Builder;
 
     public function makeSubscription(
         string  $key,

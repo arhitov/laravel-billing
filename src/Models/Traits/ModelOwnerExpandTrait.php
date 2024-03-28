@@ -13,6 +13,7 @@ use Arhitov\LaravelBilling\Models\SavedPayment;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -160,10 +161,21 @@ trait ModelOwnerExpandTrait
 
     public function hasSubscriptionActive(string $key): bool
     {
+        return $this->builderSubscriptionActive()
+                    ->where('key', '=', $key)
+                    ->exists();
+    }
+
+    public function listSubscriptionActive(): Collection
+    {
+        return $this->builderSubscriptionActive()->get();
+    }
+
+    public function builderSubscriptionActive(): Builder
+    {
         return $this->subscription()
-            ->where('key', '=', $key)
-            ->where('state', '=', SubscriptionStateEnum::Active->value)
-            ->exists();
+                    ->where('state', '=', SubscriptionStateEnum::Active->value)
+                    ->getQuery();
     }
 
     public function makeSubscription(

@@ -197,4 +197,38 @@ class SubscriptionTest extends FeatureTestCase
 
         $this->assertEquals(SubscriptionStateEnum::Active, $subscriptionCreated->state, 'The subscription status should be "Active".');
     }
+
+    /**
+     * @depends testCreateSubscriptionTwo
+     * @return void
+     * @throws ErrorException
+     * @throws Throwable
+     */
+    public function testListSubscriptionActive()
+    {
+        $owner = $this->createOwner();
+
+        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
+        $this->assertEquals(0, $owner->builderSubscriptionActive()->count(), 'The owner must not have subscription.');
+        $this->assertEquals(0, $owner->listSubscriptionActive()->count(), 'The owner must not have subscription.');
+
+        $subscriptionFirst = $owner->createSubscription('first');
+
+        $subscriptionTwo = $owner->createSubscription('two');
+
+        $this->assertEquals(2, $owner->subscription()->count(), 'No subscription was created for the owner.');
+        $this->assertEquals(0, $owner->builderSubscriptionActive()->count(), 'There should be no active subscriptions.');
+        $this->assertEquals(0, $owner->listSubscriptionActive()->count(), 'There should be no active subscriptions.');
+
+        $subscriptionFirst
+            ->setState(SubscriptionStateEnum::Active)
+            ->saveOrFail();
+
+        $subscriptionTwo
+            ->setState(SubscriptionStateEnum::Active)
+            ->saveOrFail();
+
+        $this->assertEquals(2, $owner->builderSubscriptionActive()->count(), 'Invalid number of active subscriptions.');
+        $this->assertEquals(2, $owner->listSubscriptionActive()->count(), 'Invalid number of active subscriptions.');
+    }
 }
