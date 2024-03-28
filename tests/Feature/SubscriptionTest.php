@@ -77,6 +77,20 @@ class SubscriptionTest extends FeatureTestCase
      * @depends testCreateSubscription
      * @return void
      */
+    public function testCreateSubscriptionTwo()
+    {
+        $owner = $this->createOwner();
+
+        $this->assertEquals(0, $owner->subscription()->count(), 'The owner must not have subscription.');
+        $owner->createSubscription('first');
+        $owner->createSubscription('two');
+        $this->assertEquals(2, $owner->subscription()->count(), 'No subscription was created for the owner.');
+    }
+
+    /**
+     * @depends testCreateSubscription
+     * @return void
+     */
     public function testCreateSubscriptionUseAmount()
     {
         $owner = $this->createOwner();

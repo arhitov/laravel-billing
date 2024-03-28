@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamp('state_expiry_at')->nullable()->index();
             $table->timestamps();
 
-            $table->unique(['owner_type', 'owner_id']);
+            $table->index(['owner_type', 'owner_id']);
             $table->unique(['owner_type', 'owner_id', 'key']);
 
             $table->comment('Owner subscriptions.');
