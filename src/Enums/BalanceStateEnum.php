@@ -4,9 +4,14 @@ namespace Arhitov\LaravelBilling\Enums;
 
 enum BalanceStateEnum: string
 {
-    case Active = 'active';
+    case Active =   'active';
     case Inactive = 'inactive';
-    case Locked = 'locked';
+    case Locked =   'locked';
+
+    public function isActive(): bool
+    {
+        return $this === BalanceStateEnum::Active;
+    }
 
     public function isAllowIncrease(): bool
     {
