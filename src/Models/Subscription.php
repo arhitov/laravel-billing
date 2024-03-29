@@ -16,6 +16,7 @@ use Watson\Validating\ValidatingTrait;
  * @property int $id
  * @property string $uuid
  * @property string $key Unique subscription name on your system.
+ * @property ?string $key_extend More information about subscriptions.
  * @property int $balance_id The balance from which the payment was made.
  * @property float $amount The amount that was paid upon purchase.
  * @property ?CurrencyEnum $currency
@@ -48,6 +49,7 @@ class Subscription extends Model
     protected $fillable = [
         'uuid',
         'key',
+        'key_extend',
         'balance_id',
         'currency',
         'amount',
@@ -64,6 +66,7 @@ class Subscription extends Model
     protected $rules = [
         'uuid' => ['required', 'string'],
         'key' => ['required', 'string', 'max:255'],
+        'key_extend' => ['nullable', 'string', 'max:255'],
         'balance_id' => ['nullable', 'required_with:amount', 'int', 'min:1'],
         'currency' => ['nullable', 'required_with:balance_id', 'in:class:' . CurrencyEnum::class],
         'amount' => ['nullable', 'numeric'],
@@ -78,6 +81,7 @@ class Subscription extends Model
      * @var array
      */
     protected $attributes = [
+        'key_extend' => null,
         'amount' => null,
         'beginning_at' => null,
         'expiry_at' => null,

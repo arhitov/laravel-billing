@@ -185,12 +185,14 @@ trait ModelOwnerExpandTrait
         Carbon  $beginning_at = null,
         Carbon  $expiry_at = null,
         string  $uuid = null,
+        string  $key_extend = null,
     ): Subscription
     {
         /** @var Subscription $subscription */
         $subscription = $this->subscription()->make([
             'uuid' =>         $uuid ?? Str::orderedUuid()->toString(),
             'key' =>          $key,
+            'key_extend' =>   $key_extend,
             'amount' =>       $amount,
             'beginning_at' => $beginning_at,
             'expiry_at' =>    $expiry_at,
@@ -208,9 +210,10 @@ trait ModelOwnerExpandTrait
         Carbon  $beginning_at = null,
         Carbon  $expiry_at = null,
         string  $uuid = null,
+        string  $key_extend = null,
     ): Subscription
     {
-        $subscription = $this->makeSubscription($key, $balance, $amount, $beginning_at, $expiry_at, $uuid);
+        $subscription = $this->makeSubscription($key, $balance, $amount, $beginning_at, $expiry_at, $uuid, $key_extend);
         $subscription->saveOrFail();
         // Method boot::created in model Balance doesn't start in this case. Call manually.
         event(new SubscriptionCreatedEvent($subscription));

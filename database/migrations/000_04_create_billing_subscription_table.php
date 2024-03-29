@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('owner_type');
             $table->unsignedBigInteger('owner_id');
             $table->string('key')->index()->comment('Unique subscription name on your system.');
+            $table->string('key_extend')->nullable()->comment('More information about subscriptions');
             $table->unsignedBigInteger('balance_id')->nullable()->index()->comment('The balance from which the payment was made.');
             $table->string('currency', 5)->nullable();
             $table->decimal('amount', 18, config('billing.rounding.precision'))->nullable()->comment('The amount that was paid upon purchase.');
