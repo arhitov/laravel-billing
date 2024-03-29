@@ -169,4 +169,9 @@ class Subscription extends Model
         $this->currency = $balance->currency;
         return $this;
     }
+
+    public function isActive(): bool
+    {
+        return $this->exists && $this->state->isActive();
+    }
 }
