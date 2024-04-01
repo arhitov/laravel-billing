@@ -53,7 +53,7 @@ interface BillableInterface
     /**
      * @return Collection<SavedPayment>
      */
-    public function getPaymentMethodList(): Collection;
+    public function listPaymentMethod(): Collection;
 
     /**
      * ********************

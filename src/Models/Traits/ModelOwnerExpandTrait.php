@@ -107,7 +107,7 @@ trait ModelOwnerExpandTrait
     /**
      * @return Collection<SavedPayment>
      */
-    public function getPaymentMethodList(): Collection
+    public function listPaymentMethod(): Collection
     {
         $balanceIdList = $this->balance()->pluck('id')->toArray();
         if (empty($balanceIdList)) {

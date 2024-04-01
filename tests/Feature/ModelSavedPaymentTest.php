@@ -18,7 +18,7 @@ class ModelSavedPaymentTest extends FeatureTestCase
         $balance = $owner->getBalanceOrCreate();
 
         $this->assertEquals(0, $balance->savedPayment()->count(), 'There should be no saved methods at this stage.');
-        $this->assertEquals(0, $owner->getPaymentMethodList()->count(), 'There should be no saved methods at this stage.');
+        $this->assertEquals(0, $owner->listPaymentMethod()->count(), 'There should be no saved methods at this stage.');
 
         $titleTest = 'My Card 123';
         $savedPayment = $balance->addPaymentMethodsOrFail([
@@ -35,7 +35,7 @@ class ModelSavedPaymentTest extends FeatureTestCase
         $this->assertEquals(SavedPaymentStateEnum::Active, $savedPayment->state, 'Saved payment has a state of not "Active"');
 
         $this->assertEquals(1, $balance->savedPayment()->count(), 'The number of saved methods does not match the value being checked.');
-        $this->assertEquals(1, $owner->getPaymentMethodList()->count(), 'The number of saved methods does not match the value being checked.');
+        $this->assertEquals(1, $owner->listPaymentMethod()->count(), 'The number of saved methods does not match the value being checked.');
     }
 
     /**
