@@ -9,6 +9,7 @@ use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
 use Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException;
 use Arhitov\LaravelBilling\Exceptions\SubscriptionNotFoundException;
 use Arhitov\LaravelBilling\Models\Balance;
+use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Models\SavedPayment;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
@@ -96,6 +97,26 @@ trait ModelOwnerExpandTrait
         }
 
         return $amount ?? 0;
+    }
+
+    /**
+     * ********************
+     * *** Operation ***
+     * ********************
+     */
+
+    /**
+     * @return Builder
+     */
+    public function builderOperation(): Builder
+    {
+        $balanceIdList = $this->balance()->pluck('id')->toArray();
+
+        return Operation::query()->where(static function (Builder $queryBuilder) use ($balanceIdList) {
+            $queryBuilder
+                ->orWhereIn('sender_balance_id', $balanceIdList)
+                ->orWhereIn('recipient_balance_id', $balanceIdList);
+        });
     }
 
     /**

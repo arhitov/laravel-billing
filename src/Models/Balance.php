@@ -9,6 +9,7 @@ use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -148,6 +149,21 @@ class Balance extends Model
     public function savedPayment(): HasMany
     {
         return $this->hasMany(SavedPayment::class,'owner_balance_id', 'id');
+    }
+
+    /**
+     * Dependency Operation
+     *
+     * @return Builder
+     */
+    public function operation(): Builder
+    {
+        $id = $this->id;
+        return Operation::query()->where(static function (Builder $queryBuilder) use ($id) {
+            $queryBuilder
+                ->orWhere('sender_balance_id', '=', $id)
+                ->orWhere('recipient_balance_id', '=', $id);
+        });
     }
 
     public function addPaymentMethodsOrFail(array $attributes): SavedPayment

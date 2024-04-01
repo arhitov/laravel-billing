@@ -46,6 +46,17 @@ interface BillableInterface
 
     /**
      * ********************
+     * *** Operation ***
+     * ********************
+     */
+
+    /**
+     * @return Builder
+     */
+    public function builderOperation(): Builder;
+
+    /**
+     * ********************
      * *** SavedPayment ***
      * ********************
      */
