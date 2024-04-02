@@ -68,13 +68,13 @@ class OperationTest extends FeatureTestCase
         $operation = $transfer->getOperation();
 
         $this->assertEquals($balance1->id, $operation->sender_balance_id, 'The sender\'s balance is incorrect.');
-        $this->assertEquals($balance1->id, $operation->senderBalance->id, 'The sender\'s balance is incorrect.');
+        $this->assertEquals($balance1->id, $operation->sender_balance->id, 'The sender\'s balance is incorrect.');
         $this->assertEquals($balance1->id, $operation->senderBalance()->first()->id, 'The sender\'s balance is incorrect.');
 
 
         $this->assertEquals($balance2->id, $operation->recipient_balance_id, 'The recipient\'s balance is incorrect.');
-        $this->assertEquals($balance1->id, $operation->senderBalance->id, 'The sender\'s balance is incorrect.');
-        $this->assertEquals($balance1->id, $operation->senderBalance()->first()->id, 'The sender\'s balance is incorrect.');
+        $this->assertEquals($balance2->id, $operation->recipient_balance->id, 'The recipient\'s balance is incorrect.');
+        $this->assertEquals($balance2->id, $operation->recipientBalance()->first()->id, 'The recipient\'s balance is incorrect.');
 
     }
 }

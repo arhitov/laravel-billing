@@ -34,8 +34,8 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
  * Dependency:
- * @property Balance $senderBalance
- * @property Balance $recipientBalance
+ * @property Balance $sender_balance
+ * @property Balance $recipient_balance
  */
 class Operation extends Model
 {
@@ -158,6 +158,10 @@ class Operation extends Model
     {
         return $this->belongsTo(Balance::class, 'sender_balance_id', 'id');
     }
+    public function sender_balance(): BelongsTo
+    {
+        return $this->senderBalance();
+    }
 
     /**
      * Dependency The balance recipient.
@@ -167,5 +171,9 @@ class Operation extends Model
     public function recipientBalance(): BelongsTo
     {
         return $this->belongsTo(Balance::class, 'recipient_balance_id', 'id');
+    }
+    public function recipient_balance(): BelongsTo
+    {
+        return $this->recipientBalance();
     }
 }
