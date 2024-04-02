@@ -35,10 +35,11 @@ class BalanceListenersTest extends FeatureTestCase
         Event::fake();
 
         $balanceAmount = 100;
+        $balanceAmountTest = 123;
         $owner = $this->createOwner();
         $balance = $owner->getBalanceOrCreate();
 
-        $balanceCacheKeySetting = $balance->getSettingCacheAmount();
+        $balanceCacheKeySetting = $balance->getSettingCache();
         $this->assertIsArray($balanceCacheKeySetting);
 
         (new Increase(
@@ -46,9 +47,16 @@ class BalanceListenersTest extends FeatureTestCase
             $balanceAmount,
         ))->execute();
 
-        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
+        $this->assertEquals($balanceAmount, $owner->getCacheBalance()?->amount, 'Balance contains incorrect value.');
         $this->assertTrue(Cache::has($balanceCacheKeySetting['key']), 'Cache key not found.');
-        $this->assertEquals($balanceAmount, Cache::get($balanceCacheKeySetting['key']), 'Balance in cache contains incorrect value.');
+        $this->assertEquals($balanceAmount, Cache::get($balanceCacheKeySetting['key'])['amount'], 'Balance in cache contains incorrect value.');
+
+        $balanceCache = Cache::get($balanceCacheKeySetting['key']);
+        $balanceCache['amount'] = $balanceAmountTest;
+        Cache::put($balanceCacheKeySetting['key'], $balanceCache, $balanceCacheKeySetting['ttl']);
+
+        $this->assertEquals($balanceAmountTest, Cache::get($balanceCacheKeySetting['key'])['amount'], 'Balance in cache contains incorrect value.');
+        $this->assertEquals($balanceAmountTest, $owner->getCacheBalance()?->amount, 'Balance contains incorrect value.');
 
         Event::assertNotDispatched(Events\BalanceChangedEvent::class);
 
@@ -57,6 +65,6 @@ class BalanceListenersTest extends FeatureTestCase
         );
 
         $this->assertFalse(Cache::has($balanceCacheKeySetting['key']), 'Cache key found.');
-        $this->assertEquals($balanceAmount, $owner->getBalanceCacheAmount(), 'Balance contains incorrect value.');
+        $this->assertEquals($balanceAmount, $owner->getCacheBalance()?->amount, 'Balance contains incorrect value.');
     }
 }

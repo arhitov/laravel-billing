@@ -85,18 +85,18 @@ trait ModelOwnerExpandTrait
         return $balance;
     }
 
-    public function getBalanceCacheAmount(string $key = 'main'): float
+    public function getCacheBalance(string $key = 'main'): ?Balance
     {
-        $amount = Balance::getCacheAmount($this, $key);
-        if (is_null($amount)) {
+        $balance = Balance::getFromCache($this, $key);
+        if (is_null($balance)) {
             $balance = $this->getBalance($key);
-            $amount = $balance?->amount ?? null;
-            if (! is_null($amount)) {
-                $balance->putCacheAmount();
+            if (is_null($balance)) {
+                return null;
             }
+            $balance->putInCache();
         }
 
-        return $amount ?? 0;
+        return $balance;
     }
 
     /**

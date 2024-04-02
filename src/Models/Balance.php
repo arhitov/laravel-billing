@@ -173,33 +173,56 @@ class Balance extends Model
         return $savedPayment;
     }
 
-    public function putCacheAmount(): void
+    public function putInCache(): void
     {
-        $ownerCacheKey = $this->getSettingCacheAmount();
+        $ownerCacheKey = $this->getSettingCache();
         if ($ownerCacheKey) {
-            Cache::put($ownerCacheKey['key'], $this->amount, $ownerCacheKey['ttl']);
+            Cache::put($ownerCacheKey['key'], [
+                'id' => $this->id,
+                'amount' => $this->amount,
+                'currency' => $this->currency->value,
+                'limit' => $this->limit,
+                'state' => $this->state->value,
+            ], $ownerCacheKey['ttl']);
         }
     }
 
-    public function deleteCacheAmount(): void
+    public function deleteFromCache(): void
     {
-        $ownerCacheKey = $this->getSettingCacheAmount();
+        $ownerCacheKey = $this->getSettingCache();
         if ($ownerCacheKey) {
             Cache::delete($ownerCacheKey['key']);
         }
     }
 
-    public static function getCacheAmount(BillableInterface $owner, string $key): ?float
+    public static function getFromCache(BillableInterface $owner, string $key): ?self
     {
         $cacheKeySetting = self::makeCacheKeySetting($owner, $key);
         if (is_null($cacheKeySetting)) {
             return null;
         }
 
-        return Cache::get($cacheKeySetting['key'], null);
+        $data = Cache::get($cacheKeySetting['key'], null);
+
+        if (is_null($data)) {
+            return null;
+        }
+
+        $balance = self::make([
+            'owner_type' => get_class($owner),
+            'owner_id' => $owner->id,
+            'key' => $key,
+            'amount' => $data['amount'],
+            'currency' => $data['currency'],
+            'limit' => $data['limit'],
+            'state' => $data['state'],
+        ]);
+        $balance->id = $data['id'];
+
+        return $balance;
     }
 
-    public function getSettingCacheAmount(): ?array
+    public function getSettingCache(): ?array
     {
         if (! $this->exists) {
             return null;

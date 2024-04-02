@@ -8,6 +8,6 @@ class BalanceChangedListener
 {
     public function handle(BalanceChangedEvent $event)
     {
-        $event->balance->deleteCacheAmount();
+        $event->balance->deleteFromCache();
     }
 }
