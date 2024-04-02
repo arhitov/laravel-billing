@@ -8,6 +8,7 @@ use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Watson\Validating\ValidatingTrait;
 
 /**
@@ -32,6 +33,9 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $state_errored_at
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
+ * Dependency:
+ * @property Balance $senderBalance
+ * @property Balance $recipientBalance
  */
 class Operation extends Model
 {
@@ -143,5 +147,25 @@ class Operation extends Model
     public function getTable(): string
     {
         return config('billing.database.tables.operation');
+    }
+
+    /**
+     * Dependency The balance sender.
+     *
+     * @return BelongsTo
+     */
+    public function senderBalance(): BelongsTo
+    {
+        return $this->belongsTo(Balance::class, 'sender_balance_id', 'id');
+    }
+
+    /**
+     * Dependency The balance recipient.
+     *
+     * @return BelongsTo
+     */
+    public function recipientBalance(): BelongsTo
+    {
+        return $this->belongsTo(Balance::class, 'recipient_balance_id', 'id');
     }
 }
