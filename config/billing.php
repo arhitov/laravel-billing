@@ -53,12 +53,18 @@ return [
     'currency' => env('BILLING_CURRENCY', 'RUB'),
 
     /**
-     * Root balance.
+     * Root owner balance.
      * Replenishments are made from it and funds are received when paying for services.
      */
-    'root_balance' => [
-        'owner_type' => 'Arhitov\\LaravelBilling\\Models\\UserRoot',
+    'root_owner' => [
+        /** Name root owner table or "null" when using a custom model  */
+        'table' => 'billing_root_owner',
+        'owner_type' => 'Arhitov\\LaravelBilling\\Models\\RootOwner',
         'owner_id' => 1,
+        /** Model data, if automatic model creation is required. Or "null". */
+        'create_model_data' => [
+            'name' => 'Root owner',
+        ],
     ],
 
     /**

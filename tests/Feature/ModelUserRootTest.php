@@ -8,7 +8,7 @@ use Arhitov\LaravelBilling\Decrease;
 use Arhitov\LaravelBilling\Exceptions\TransferUsageException;
 use Arhitov\LaravelBilling\Increase;
 use Arhitov\LaravelBilling\Models\Balance;
-use Arhitov\LaravelBilling\Models\UserRoot;
+use Arhitov\LaravelBilling\Models\RootOwner;
 use Arhitov\LaravelBilling\Tests\FeatureTestCase;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +16,7 @@ class ModelUserRootTest extends FeatureTestCase
 {
     public function testBase()
     {
-        $owner = new UserRoot;
+        $owner = new RootOwner;
         // Connection may be empty
         // $this->assertNotEmpty(self::$model->getConnectionName(), 'Connect name empty');
         $this->assertNotEmpty($owner->getTable(), 'Table empty');
@@ -31,7 +31,7 @@ class ModelUserRootTest extends FeatureTestCase
      */
     public function testBalance()
     {
-        $owner = new UserRoot;
+        $owner = new RootOwner;
         $balance = $owner->getBalanceOrCreate();
         $this->assertEquals(
             Balance::class,
