@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ae410b22c6dab1fa5e830f1b4780a16",
+    "content-hash": "2e4c85eaa8a9ace5cc5cb7358b47b0e1",
     "packages": [
         {
             "name": "arhitov/laravel-helpers",
-            "version": "dev-main",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/laravel-helpers.git",
@@ -24,7 +24,6 @@
                 "illuminate/validation": "^v10|^v11",
                 "php": "^8.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -48,22 +47,22 @@
             ],
             "support": {
                 "issues": "https://github.com/arhitov/laravel-helpers/issues",
-                "source": "https://github.com/arhitov/laravel-helpers/tree/main"
+                "source": "https://github.com/arhitov/laravel-helpers/tree/0.1.0"
             },
             "time": "2024-03-27T10:48:20+00:00"
         },
         {
             "name": "arhitov/laravel-package-helpers",
-            "version": "dev-main",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/laravel-package-helpers.git",
-                "reference": "db15fb6acf6ca939f9f1b994bdd56c2a6525929d"
+                "reference": "7f50947b4b09d340814948e270ea20751ff14633"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/laravel-package-helpers/zipball/db15fb6acf6ca939f9f1b994bdd56c2a6525929d",
-                "reference": "db15fb6acf6ca939f9f1b994bdd56c2a6525929d",
+                "url": "https://api.github.com/repos/arhitov/laravel-package-helpers/zipball/7f50947b4b09d340814948e270ea20751ff14633",
+                "reference": "7f50947b4b09d340814948e270ea20751ff14633",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +70,6 @@
                 "illuminate/support": "^v10|^v11",
                 "php": "^8.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -96,9 +94,9 @@
             ],
             "support": {
                 "issues": "https://github.com/arhitov/laravel-package-helpers/issues",
-                "source": "https://github.com/arhitov/laravel-package-helpers/tree/main"
+                "source": "https://github.com/arhitov/laravel-package-helpers/tree/0.1.0"
             },
-            "time": "2024-03-22T17:30:54+00:00"
+            "time": "2024-03-22T14:58:46+00:00"
         },
         {
             "name": "brick/math",
@@ -8587,11 +8585,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "arhitov/laravel-package-helpers": 20
-    },
-    "prefer-stable": true,
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
