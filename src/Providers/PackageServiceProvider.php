@@ -13,14 +13,18 @@ class PackageServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->registerConfig(
-            __DIR__ . '/../../config',
-            'billing-config'
-        );
-        $this->registerMigrations(
-            __DIR__ . '/../../database/migrations',
-            'billing-migrations'
-        );
+        if ($this->app->runningInConsole()) {
+
+            $this->registerConfig(
+                __DIR__ . '/../../config',
+                'billing-config'
+            );
+            $this->registerMigrations(
+                __DIR__ . '/../../database/migrations',
+                'billing-migrations'
+            );
+
+        }
     }
 
     public function register(): void
