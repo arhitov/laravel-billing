@@ -10,7 +10,7 @@ use Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException;
 use Arhitov\LaravelBilling\Exceptions\SubscriptionNotFoundException;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\Operation;
-use Arhitov\LaravelBilling\Models\SavedPayment;
+use Arhitov\LaravelBilling\Models\CreditCard;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -121,21 +121,21 @@ trait ModelOwnerExpandTrait
 
     /**
      * ********************
-     * *** SavedPayment ***
+     * *** CreditCard ***
      * ********************
      */
 
     /**
-     * @return Collection<SavedPayment>
+     * @return Collection<CreditCard>
      */
-    public function listPaymentMethod(): Collection
+    public function listCreditCard(): Collection
     {
         $balanceIdList = $this->balance()->pluck('id')->toArray();
         if (empty($balanceIdList)) {
             return new Collection();
         }
 
-        return SavedPayment::query()->whereIn('owner_balance_id', $balanceIdList)->get();
+        return CreditCard::query()->whereIn('owner_balance_id', $balanceIdList)->get();
     }
 
     /**

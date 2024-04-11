@@ -3,19 +3,19 @@
 namespace Arhitov\LaravelBilling\Tests\Unit;
 
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
-use Arhitov\LaravelBilling\Models\SavedPayment;
+use Arhitov\LaravelBilling\Models\CreditCard;
 use Arhitov\LaravelBilling\Tests\TestCase;
 use Illuminate\Support\Facades\Validator;
 use ValueError;
 use Watson\Validating\ValidatingTrait;
 
-class ModelSavedPaymentUnitTest extends TestCase
+class ModelCreditCardUnitTest extends TestCase
 {
-    protected static SavedPayment $model;
+    protected static CreditCard $model;
 
     public static function setUpBeforeClass(): void
     {
-        self::$model = new SavedPayment;
+        self::$model = new CreditCard;
     }
 
     /**
@@ -63,7 +63,7 @@ class ModelSavedPaymentUnitTest extends TestCase
      */
     public function testValidation()
     {
-        $model = new SavedPayment();
+        $model = new CreditCard();
 
         $this->assertFalse($model->isValid());
 
@@ -90,7 +90,7 @@ class ModelSavedPaymentUnitTest extends TestCase
     public function testValidationStateException()
     {
         $this->expectException(ValueError::class);
-        $this->expectExceptionMessage('"unknown" is not a valid backing value for enum Arhitov\\LaravelBilling\\Enums\\SavedPaymentStateEnum');
-        new SavedPayment(['state' => 'unknown']);
+        $this->expectExceptionMessage('"unknown" is not a valid backing value for enum Arhitov\\LaravelBilling\\Enums\\CreditCardStateEnum');
+        new CreditCard(['state' => 'unknown']);
     }
 }

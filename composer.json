@@ -5,7 +5,10 @@
     "license": "MIT",
     "keywords": [
         "laravel",
-        "billing"
+        "billing",
+        "cashier",
+        "credit",
+        "subscriptions"
     ],
     "homepage": "https://github.com/arhitov/laravel-billing",
     "authors": [

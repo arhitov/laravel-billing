@@ -4,7 +4,7 @@ namespace Arhitov\LaravelBilling\Models;
 
 use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
-use Arhitov\LaravelBilling\Enums\SavedPaymentStateEnum;
+use Arhitov\LaravelBilling\Enums\CreditCardStateEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +22,7 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $card_expiry_at Expiration date
  * @property ?string $issuer_country
  * @property ?string $issuer_name
- * @property SavedPaymentStateEnum $state
+ * @property CreditCardStateEnum $state
  * @property ?Carbon $state_active_at
  * @property ?Carbon $state_inactive_at
  * @property ?Carbon $state_insolvent_at
@@ -31,7 +31,7 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $created_at Date of creation
  * @property ?Carbon $updated_at Date updated
  */
-class SavedPayment extends Model
+class CreditCard extends Model
 {
     use ValidatingTrait, EloquentModelExtendTrait {
         EloquentModelExtendTrait::getRules insteadof ValidatingTrait;
@@ -72,7 +72,7 @@ class SavedPayment extends Model
         'card_expiry_at' => ['nullable', 'date'],
         'issuer_country' => ['nullable', 'string', 'max:20'],
         'issuer_name' => ['nullable', 'string', 'max:255'],
-        'state' => ['required', 'in:class:' . SavedPaymentStateEnum::class],
+        'state' => ['required', 'in:class:' . CreditCardStateEnum::class],
     ];
 
     /**
@@ -88,7 +88,7 @@ class SavedPayment extends Model
         'card_expiry_at' => null,
         'issuer_country' => null,
         'issuer_name' => null,
-        'state' => SavedPaymentStateEnum::Created,
+        'state' => CreditCardStateEnum::Created,
         'state_active_at' => null,
         'state_inactive_at' => null,
         'state_insolvent_at' => null,
@@ -103,7 +103,7 @@ class SavedPayment extends Model
      */
     protected $casts = [
         'card_expiry_at' => 'datetime',
-        'state' => SavedPaymentStateEnum::class,
+        'state' => CreditCardStateEnum::class,
         'state_active_at' => 'datetime',
         'state_inactive_at' => 'datetime',
         'state_insolvent_at' => 'datetime',
@@ -128,7 +128,7 @@ class SavedPayment extends Model
      */
     public function getTable(): string
     {
-        return config('billing.database.tables.saved_payment');
+        return config('billing.database.tables.credit_card');
     }
 
     /**

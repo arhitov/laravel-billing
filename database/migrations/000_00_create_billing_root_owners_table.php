@@ -27,7 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (config('billing.root_owner')) {
+        if (config('billing.root_owner.table')) {
             Schema::dropIfExists(config('billing.root_owner.table'));
         }
     }

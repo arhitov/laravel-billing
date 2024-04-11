@@ -17,13 +17,13 @@ return [
          */
         'tables' => [
             /** Balance storage table */
-            'balance' => 'billing_balance',
+            'balance' => 'billing_balances',
             /** Transaction table */
-            'operation' => 'billing_operation',
-            /** Saved payment table */
-            'saved_payment' => 'billing_saved_payment',
+            'operation' => 'billing_operations',
+            /** Saved credit cards table */
+            'credit_card' => 'billing_credit_cards',
             /** Subscription table */
-            'subscription' => 'billing_subscription',
+            'subscription' => 'billing_subscriptions',
         ],
 
         /**
@@ -58,12 +58,12 @@ return [
      */
     'root_owner' => [
         /** Name root owner table or "null" when using a custom model  */
-        'table' => 'billing_root_owner',
+        'table' => 'billing_root_owners',
         'owner_type' => 'Arhitov\\LaravelBilling\\Models\\RootOwner',
         'owner_id' => 1,
         /** Model data, if automatic model creation is required. Or "null". */
         'create_model_data' => [
-            'name' => 'Root owner',
+            'name' => env('APP_NAME', 'Laravel'),
         ],
     ],
 

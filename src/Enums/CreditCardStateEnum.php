@@ -2,7 +2,7 @@
 
 namespace Arhitov\LaravelBilling\Enums;
 
-enum SavedPaymentStateEnum: string
+enum CreditCardStateEnum: string
 {
     case Created = 'created';
     case Active = 'active';

@@ -32,7 +32,7 @@ use Watson\Validating\ValidatingTrait;
  * @property ?Carbon $updated_at Date updated
  * Dependency:
  * @property \Arhitov\LaravelBilling\Contracts\BillableInterface $owner
- * @property \Illuminate\Support\Collection<SavedPayment> $saved_payment
+ * @property \Illuminate\Support\Collection<CreditCard> $credit_card
  */
 class Balance extends Model
 {
@@ -142,13 +142,13 @@ class Balance extends Model
     }
 
     /**
-     * Dependency Saved payment methods
+     * Dependency Saved credit card methods
      *
      * @return HasMany
      */
-    public function savedPayment(): HasMany
+    public function creditCard(): HasMany
     {
-        return $this->hasMany(SavedPayment::class,'owner_balance_id', 'id');
+        return $this->hasMany(CreditCard::class,'owner_balance_id', 'id');
     }
 
     /**
@@ -166,11 +166,11 @@ class Balance extends Model
         });
     }
 
-    public function addPaymentMethodsOrFail(array $attributes): SavedPayment
+    public function addCreditCardOrFail(array $attributes): CreditCard
     {
-        /** @var SavedPayment $savedPayment */
-        $savedPayment = $this->savedPayment()->create($attributes);
-        return $savedPayment;
+        /** @var CreditCard $creditCard */
+        $creditCard = $this->creditCard()->create($attributes);
+        return $creditCard;
     }
 
     public function putInCache(): void

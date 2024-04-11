@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('billing.database.tables.saved_payment'), static function (Blueprint $table) {
+        Schema::create(config('billing.database.tables.credit_card'), static function (Blueprint $table) {
             $table->id();
             $table->bigInteger('owner_balance_id')->unsigned()->index();
             $table->string('title', 50);
@@ -33,9 +33,9 @@ return new class extends Migration
 
             $table->unique(['rebill_id', 'gateway']);
 
-            $table->comment('Saved payment method');
+            $table->comment('Saved credit cards');
 
-            $table->foreign('owner_balance_id', 'fk_saved_payment_balance_id')
+            $table->foreign('owner_balance_id', 'fk_credit_card_balance_id')
                   ->references('id')
                   ->on(config('billing.database.tables.balance'));
         });
@@ -46,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('billing.database.tables.saved_payment'));
+        Schema::dropIfExists(config('billing.database.tables.credit_card'));
     }
 };
