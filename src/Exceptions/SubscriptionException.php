@@ -3,9 +3,8 @@
 namespace Arhitov\LaravelBilling\Exceptions;
 
 use Arhitov\LaravelBilling\Models\Subscription;
-use Exception;
 
-class SubscriptionException extends Exception
+class SubscriptionException extends LaravelBillingException
 {
     /**
      * Create a new exception instance.

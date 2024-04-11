@@ -3,9 +3,8 @@
 namespace Arhitov\LaravelBilling\Exceptions;
 
 use Arhitov\LaravelBilling\Models\Balance;
-use Exception;
 
-class BalanceException extends Exception
+class BalanceException extends LaravelBillingException
 {
     /**
      * Create a new exception instance.

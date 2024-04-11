@@ -3,9 +3,8 @@
 namespace Arhitov\LaravelBilling\Exceptions;
 
 use Arhitov\LaravelBilling\Models\Operation;
-use Exception;
 
-class OperationException extends Exception
+class OperationException extends LaravelBillingException
 {
     /**
      * Create a new exception instance.

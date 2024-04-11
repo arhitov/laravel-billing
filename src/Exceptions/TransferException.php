@@ -3,9 +3,8 @@
 namespace Arhitov\LaravelBilling\Exceptions;
 
 use Arhitov\LaravelBilling\Transfer;
-use Exception;
 
-class TransferException extends Exception
+class TransferException extends LaravelBillingException
 {
     /**
      * Create a new exception instance.
