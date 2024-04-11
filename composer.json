@@ -1,6 +1,7 @@
 {
     "name": "arhitov/laravel-billing",
     "description": "Billing module for laravel projects",
+    "version": "0.1.1",
     "type": "library",
     "license": "MIT",
     "keywords": [
