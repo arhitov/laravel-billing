@@ -2,15 +2,15 @@
 
 namespace Arhitov\LaravelBilling\Providers;
 
-use Arhitov\LaravelBilling\Events\BalanceChangedEvent;
+use Arhitov\LaravelBilling\Contracts\Balance\BalanceChangedEventInterface;
 use Arhitov\LaravelBilling\Listeners\BalanceChangedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        BalanceChangedEvent::class => [
+        BalanceChangedEventInterface::class => [
             BalanceChangedListener::class,
-        ]
+        ],
     ];
 }

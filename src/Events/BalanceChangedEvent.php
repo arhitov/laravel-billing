@@ -2,6 +2,8 @@
 
 namespace Arhitov\LaravelBilling\Events;
 
-class BalanceChangedEvent extends BalanceEvent
+use Arhitov\LaravelBilling\Contracts\Balance\BalanceChangedEventInterface;
+
+class BalanceChangedEvent extends BalanceEvent implements BalanceChangedEventInterface
 {
 }
