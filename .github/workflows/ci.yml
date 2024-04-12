@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.4', '8.0']
+        php: ['8.0']
     name: Run PHPUnit v9 by PHP ${{ matrix.php }}
 
     steps:
