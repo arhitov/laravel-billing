@@ -3,9 +3,9 @@ Laravel Billing
 
 ![PHP][ico-php-support]
 [![Laravel][ico-laravel-support]][link-laravel-support]
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/arhitov/laravel-billing.svg?style=flat-square)](https://packagist.org/packages/arhitov/laravel-billing)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/arhitov/laravel-billing.svg)](https://packagist.org/packages/arhitov/laravel-billing)
 [![GitHub Actions](https://github.com/arhitov/laravel-billing/workflows/Tests/badge.svg)](https://github.com/arhitov/laravel-billing/actions)
-[![Total Downloads](https://img.shields.io/packagist/dt/arhitov/laravel-billing.svg?style=flat-square)](https://packagist.org/packages/arhitov/laravel-billing)
+[![Total Downloads](https://img.shields.io/packagist/dt/arhitov/laravel-billing.svg)](https://packagist.org/packages/arhitov/laravel-billing)
 [![Software License][ico-license]][link-license]
 
 Billing module for Laravel projects with support for transactions, invoicing, subscriptions, working with omnipay gateways and acquiring.
@@ -56,7 +56,7 @@ php artisan vendor:publish --tag=billing-migrations
 
 The following repositories inspired me:
 - laravel/cashier-stripe
-I express my gratitude to the authors of the above repositories.
+  I express my gratitude to the authors of the above repositories.
 
 ## License
 
