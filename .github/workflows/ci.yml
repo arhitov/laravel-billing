@@ -5,11 +5,11 @@ on:
 
 jobs:
   phpunit:
-    name: Run PHPUnit
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php: ['8.0', '8.1', '8.2', '8.3']
+    name: Run PHPUnit (PHP ${{ matrix.php }})
 
     steps:
       - name: Checkout
@@ -24,3 +24,4 @@ jobs:
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
           version: "11.0.9"
+          php-version: ${{ matrix.php }}
