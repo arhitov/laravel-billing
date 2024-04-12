@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         php: ['8.2', '8.3']
-    name: Run PHPUnit v11 by PHP ${{ matrix.php }}
+    name: Run PHPUnit v11.0.9 by PHP ${{ matrix.php }}
 
     steps:
       - name: Checkout
@@ -24,7 +24,7 @@ jobs:
         with:
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
-          version: "11"
+          version: "11.0.9"
           php_version: ${{ matrix.php }}
 
   phpunit_10:

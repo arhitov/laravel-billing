@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^7.4 | ^8.0",
         "arhitov/laravel-helpers": "^0.1",
         "arhitov/laravel-package-helpers": "^0.1",
         "laravel/framework": "^10",
