@@ -24,7 +24,7 @@ use Watson\Validating\ValidatingTrait;
  * @property string $recipient_balance_id
  * @property float $recipient_amount_before
  * @property float $recipient_amount_after
- * @property string $state
+ * @property OperationStateEnum $state
  * @property string $description
  * @property ?Carbon $state_pending_at
  * @property ?Carbon $state_succeeded_at
@@ -158,6 +158,8 @@ class Operation extends Model
     {
         return $this->belongsTo(Balance::class, 'sender_balance_id', 'id');
     }
+
+    // @TODO Fix this double method
     public function sender_balance(): BelongsTo
     {
         return $this->senderBalance();
@@ -172,6 +174,8 @@ class Operation extends Model
     {
         return $this->belongsTo(Balance::class, 'recipient_balance_id', 'id');
     }
+
+    // @TODO Fix this double method
     public function recipient_balance(): BelongsTo
     {
         return $this->recipientBalance();
