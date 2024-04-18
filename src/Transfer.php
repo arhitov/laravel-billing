@@ -21,6 +21,16 @@ class Transfer
     protected ?Operation $operation = null;
     protected ?Throwable $exception = null;
 
+    /**
+     * @param Balance $sender
+     * @param Balance $recipient
+     * @param float $amount
+     * @param string $gateway
+     * @param string|null $description
+     * @param string|null $operation_identifier
+     * @param string|null $operation_uuid
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
+     */
     public function __construct(
         protected Balance $sender,
         protected Balance $recipient,
@@ -31,6 +41,10 @@ class Transfer
         protected ?string $operation_uuid = null,
     )
     {
+        if (0 > $this->amount || $this->amount > INF) {
+            throw new Exceptions\Common\AmountException($this->amount);
+        }
+
         // Create operation
         $this->operation = Operation::make([
             'operation_identifier' => $this->operation_identifier ?? null,
