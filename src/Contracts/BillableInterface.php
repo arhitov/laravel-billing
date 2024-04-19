@@ -22,6 +22,8 @@ interface BillableInterface
      * ***************
      */
 
+    public function getOwnerIdentifier(): array;
+
     /**
      * @return MorphMany<Balance>
      */

@@ -33,6 +33,17 @@ trait ModelOwnerExpandTrait
     }
 
     /**
+     * @return array
+     */
+    final public function getOwnerIdentifier(): array
+    {
+        return [
+            'owner_type' => static::class,
+            'owner_id' => $this->getKey(),
+        ];
+    }
+
+    /**
      * ***************
      * *** Balance ***
      * ***************

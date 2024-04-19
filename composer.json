@@ -21,7 +21,7 @@
     "require": {
         "php": "^8.2",
         "arhitov/laravel-helpers": "^0.1",
-        "arhitov/laravel-package-helpers": "^0.1",
+        "arhitov/laravel-package-helpers": "^0.1.2",
         "laravel/framework": "^10",
         "watson/validating": "^8.1"
     },

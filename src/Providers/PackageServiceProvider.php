@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Providers;
 
 use Arhitov\PackageHelpers\Config\PublishesConfigTrait;
+use Arhitov\PackageHelpers\Console\Commands\RegisterCommandsTrait;
 use Arhitov\PackageHelpers\Migrations\PublishesMigrationsTrait;
 use Illuminate\Support\ServiceProvider;
 
@@ -10,6 +11,7 @@ class PackageServiceProvider extends ServiceProvider
 {
     use PublishesConfigTrait;
     use PublishesMigrationsTrait;
+    use RegisterCommandsTrait;
 
     public function boot(): void
     {
@@ -23,7 +25,10 @@ class PackageServiceProvider extends ServiceProvider
                 __DIR__ . '/../../database/migrations',
                 'billing-migrations'
             );
-
+            $this->registerCommands(
+                'Arhitov\\LaravelBilling\\Console\\Commands\\',
+                __DIR__ . '/../Console/Commands',
+            );
         }
     }
 
