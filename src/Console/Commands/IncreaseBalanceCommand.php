@@ -34,13 +34,12 @@ class IncreaseBalanceCommand extends Command
      */
     public function handle(): int
     {
-        $precision = config('billing.rounding.precision');
         $input = Validator::make(
             $this->arguments(),
             [
                 'owner_type' => ['required', 'string', 'max:255'],
                 'owner_id'   => ['required', 'int', 'min:1'],
-                'amount'     => ['required', "regex:/^(?:[1-9]\d*|0)(?:\.\d{1,{$precision}})?$/", 'min:0'],
+                'amount'     => ['required', 'billing_amount', 'min:0'],
             ],
         )->validate();
 

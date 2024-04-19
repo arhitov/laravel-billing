@@ -108,6 +108,11 @@ return [
     'rounding' => [
 
         /**
+         * Total, of which "precision" digits may be after the decimal point.
+         */
+        'total' => 18,
+
+        /**
          * Precision of float value.
          */
         'precision' => 4
