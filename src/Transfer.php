@@ -6,6 +6,7 @@ use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceDecreaseEvent;
 use Arhitov\LaravelBilling\Events\BalanceIncreaseEvent;
 use Arhitov\LaravelBilling\Exceptions;
+use Arhitov\LaravelBilling\Helpers\DatabaseHelper;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\Operation;
 use Exception;
@@ -177,7 +178,7 @@ class Transfer
 
         try {
 
-            $groupOperation = function() {
+            DatabaseHelper::transaction(function() {
 
                 /** @var Balance $balanceRecipient */
                 /** @var Balance $balanceSender */
@@ -250,13 +251,7 @@ class Transfer
                 if (static::RECIPIENT_BALANCE_CHANGE) {
                     $this->recipient->amount = $this->operation->recipient_amount_after;
                 }
-            };
-
-            if (config('billing.database.use_transaction')) {
-                DB::connection($this->operation->getConnectionName())->transaction($groupOperation, 3);
-            } else {
-                $groupOperation();
-            }
+            });
 
             if (static::SENDER_BALANCE_CHANGE) {
                 event(new BalanceDecreaseEvent($this->sender));
