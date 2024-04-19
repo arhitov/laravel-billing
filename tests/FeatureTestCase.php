@@ -6,6 +6,7 @@ use Arhitov\LaravelBilling\Contracts\BillableInterface;
 use Arhitov\LaravelBilling\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 abstract class FeatureTestCase extends TestCase
 {
     use RefreshDatabase;

@@ -33,6 +33,8 @@ use Watson\Validating\ValidatingTrait;
  * Dependency:
  * @property \Arhitov\LaravelBilling\Contracts\BillableInterface $owner
  * @property Balance $balance The balance from which the payment was made.
+ *
+ * @method saveOrFail(array $options = []): bool
  */
 class Subscription extends Model
 {

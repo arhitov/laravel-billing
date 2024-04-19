@@ -19,6 +19,7 @@ class Increase extends Transfer
      * @param string|null $operation_identifier
      * @param string|null $operation_uuid
      * @throws TransferUsageException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function __construct(
         Balance  $recipient,

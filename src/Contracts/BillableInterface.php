@@ -47,9 +47,9 @@ interface BillableInterface
     public function getCacheBalance(string $key = 'main'): ?Balance;
 
     /**
-     * ********************
+     * *****************
      * *** Operation ***
-     * ********************
+     * *****************
      */
 
     /**
@@ -58,9 +58,9 @@ interface BillableInterface
     public function builderOperation(): Builder;
 
     /**
-     * ********************
+     * ******************
      * *** CreditCard ***
-     * ********************
+     * ******************
      */
 
     /**

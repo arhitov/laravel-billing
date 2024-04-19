@@ -36,6 +36,11 @@ use Watson\Validating\ValidatingTrait;
  * Dependency:
  * @property Balance $sender_balance
  * @property Balance $recipient_balance
+ *
+ * @method static make(array $attributes = []): Builder|Model
+ * @method lockForUpdate(): Builder
+ * @method static find($id, $columns = ['*']): Builder|Builder[]|Collection|Model
+ * @method static findOrFail($id, $columns = ['*']): Builder|Builder[]|Collection|Model
  */
 class Operation extends Model
 {

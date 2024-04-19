@@ -7,7 +7,6 @@ use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
 use Arhitov\LaravelBilling\Contracts\BillableInterface;
 use Arhitov\LaravelBilling\Enums\BalanceStateEnum;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
-use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +32,11 @@ use Watson\Validating\ValidatingTrait;
  * Dependency:
  * @property \Arhitov\LaravelBilling\Contracts\BillableInterface $owner
  * @property \Illuminate\Support\Collection<CreditCard> $credit_card
+ *
+ * @method lockForUpdate(): Builder
+ * @method static make(array $attributes = []): Builder|Model
+ * @method static find($id, $columns = ['*']): Builder|Builder[]|Collection|Model
+ * @method static findOrFail($id, $columns = ['*']): Builder|Builder[]|Collection|Model
  */
 class Balance extends Model
 {

@@ -114,6 +114,7 @@ class BalanceTest extends FeatureTestCase
     /**
      * @depends testCreateBalance
      * @throws TransferUsageException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testIncreaseBalance()
     {
@@ -140,6 +141,7 @@ class BalanceTest extends FeatureTestCase
     /**
      * @depends testCreateBalance
      * @throws TransferUsageException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testIncreaseDescriptionBalance()
     {
@@ -167,6 +169,7 @@ class BalanceTest extends FeatureTestCase
      * @11depends testIncreaseDescriptionBalance
      * @return void
      * @throws TransferUsageException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testGetBalanceCacheAmount()
     {
@@ -254,6 +257,7 @@ class BalanceTest extends FeatureTestCase
 
     /**
      * @depends testCreateBalance
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testTransferBalance()
     {

@@ -14,8 +14,9 @@
     "homepage": "https://github.com/arhitov/laravel-billing",
     "authors": [
         {
-            "name": "arhitov",
-            "email": "clgsru@gmail.com"
+            "name": "Alexander Arhitov",
+            "email": "clgsru@gmail.com",
+            "homepage": "https://github.com/arhitov/"
         }
     ],
     "require": {

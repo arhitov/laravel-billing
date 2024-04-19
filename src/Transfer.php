@@ -47,17 +47,17 @@ class Transfer
 
         // Create operation
         $this->operation = Operation::make([
-            'operation_identifier' => $this->operation_identifier ?? null,
-            'operation_uuid' => $this->operation_uuid ?? Str::orderedUuid()->toString(),
-            'gateway' => $this->gateway,
-            'amount' => $this->amount,
-            'currency' => $this->recipient->currency,
-            'sender_balance_id' => $this->sender->id,
-            'sender_amount_before' => $this->sender->amount,
-            'recipient_balance_id' => $this->recipient->id,
+            'operation_identifier'    => $this->operation_identifier ?? null,
+            'operation_uuid'          => $this->operation_uuid ?? Str::orderedUuid()->toString(),
+            'gateway'                 => $this->gateway,
+            'amount'                  => $this->amount,
+            'currency'                => $this->recipient->currency,
+            'sender_balance_id'       => $this->sender->id,
+            'sender_amount_before'    => $this->sender->amount,
+            'recipient_balance_id'    => $this->recipient->id,
             'recipient_amount_before' => $this->recipient->amount,
-            'state' => OperationStateEnum::Created,
-            'description' => $this->description,
+            'state'                   => OperationStateEnum::Created,
+            'description'             => $this->description,
         ]);
     }
 
@@ -90,7 +90,7 @@ class Transfer
         try {
             $this->isAllowOrFail();
             return true;
-        } catch (Throwable $exception) {
+        } catch (Exceptions\OperationException|Exceptions\BalanceException $exception) {
             $this->exception = $exception;
             return false;
         }
@@ -119,6 +119,9 @@ class Transfer
         }
     }
 
+    /**
+     * @return bool
+     */
     public function create(): bool
     {
         try {

@@ -18,6 +18,7 @@ class ExceptionsTest extends FeatureTestCase
      * This is only there to avoid checking whether exceptions work if a simple test fails.
      * @return void
      * @throws Exceptions\TransferUsageException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testSimple()
     {
@@ -116,6 +117,7 @@ class ExceptionsTest extends FeatureTestCase
     /**
      * @depends testSimple
      * @throws Exceptions\BalanceException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function testOperationCurrencyNotMatchException()
     {
