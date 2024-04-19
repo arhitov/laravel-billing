@@ -123,6 +123,31 @@ class Transfer
     /**
      * @return bool
      */
+    public function isAllowExecute(): bool
+    {
+        try {
+            $this->isAllowExecuteOrFail();
+            return true;
+        } catch (Exceptions\Operation\OperationIsNotActiveException $exception) {
+            $this->exception = $exception;
+            return false;
+        }
+    }
+
+    /**
+     * @return void
+     * @throws \Arhitov\LaravelBilling\Exceptions\Operation\OperationIsNotActiveException
+     */
+    public function isAllowExecuteOrFail(): void
+    {
+        if (! $this->operation->state->isActive()) {
+            throw new Exceptions\Operation\OperationIsNotActiveException($this->operation);
+        }
+    }
+
+    /**
+     * @return bool
+     */
     public function create(): bool
     {
         try {
@@ -174,7 +199,11 @@ class Transfer
     {
         $this->isAllowOrFail();
 
-        $this->createOrFail();
+        if (! $this->operation->exists) {
+            $this->createOrFail();
+        }
+
+        $this->isAllowExecuteOrFail();
 
         try {
 

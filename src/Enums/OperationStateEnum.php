@@ -11,4 +11,13 @@ enum OperationStateEnum: string
     case Canceled = 'canceled';
     case Errored = 'errored';
     case Refund = 'refund';
+
+    public function isActive(): bool
+    {
+        return in_array($this->value, [
+            OperationStateEnum::Created->value,
+            OperationStateEnum::Pending->value,
+            OperationStateEnum::WaitingForCapture->value,
+        ]);
+    }
 }
