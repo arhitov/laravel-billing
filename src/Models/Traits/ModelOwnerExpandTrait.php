@@ -3,20 +3,29 @@
 namespace Arhitov\LaravelBilling\Models\Traits;
 
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
+use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Arhitov\LaravelBilling\Enums\SubscriptionStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
 use Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException;
+use Arhitov\LaravelBilling\Exceptions\Common\AmountException;
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException;
 use Arhitov\LaravelBilling\Exceptions\SubscriptionNotFoundException;
+use Arhitov\LaravelBilling\Helpers\DatabaseHelper;
+use Arhitov\LaravelBilling\Increase;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Models\CreditCard;
+use Arhitov\LaravelBilling\Models\Payment;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Omnipay\Omnipay;
+use \Omnipay\Common\CreditCard as OmnipayCreditCard;
 
 /**
  * @property int $id
@@ -323,5 +332,100 @@ trait ModelOwnerExpandTrait
         // Method boot::created in model Balance doesn't start in this case. Call manually.
         event(new SubscriptionCreatedEvent($subscription));
         return $subscription;
+    }
+
+    /**
+     * ***************
+     * *** Payment ***
+     * ***************
+     */
+
+    /**
+     * Create payment
+     *
+     * @param float $amount
+     * @param string $description
+     * @param Balance|string|null $balance
+     * @param string|null $gatewayName
+     * @param OmnipayCreditCard|array|null $card
+     * @return Payment
+     * @throws \Arhitov\LaravelBilling\Exceptions\BalanceException
+     * @throws \Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException
+     * @throws \Arhitov\LaravelBilling\Exceptions\OperationAlreadyCreatedException
+     * @throws \Arhitov\LaravelBilling\Exceptions\OperationException
+     * @throws \Arhitov\LaravelBilling\Exceptions\TransferUsageException
+     * @throws \Throwable
+     */
+    final public function createPayment(
+        float                   $amount,
+        string                  $description,
+        Balance|string          $balance = null,
+        string                  $gatewayName = null,
+        OmnipayCreditCard|array $card = null,
+    ): Payment {
+        if (0 > $amount || $amount > INF) {
+            throw new AmountException($amount);
+        }
+
+        $balance = match (true) {
+            is_null($balance)   => $this->getBalanceOrFail(),
+            is_string($balance) => $this->getBalanceOrFail($balance),
+            default             => $balance,
+        };
+
+        $gatewayName ??= config('billing.omnipay_gateway.default', null);
+        if (empty($gatewayName)) {
+            throw new GatewayNotSpecifiedException();
+        }
+
+        $gatewayConfig = config("billing.omnipay_gateway.gateways.{$gatewayName}", null);
+        if (is_null($gatewayConfig)) {
+            throw new GatewayNotFoundException($gatewayName);
+        }
+
+        // Creating a balance increase record
+        $increase = new Increase(
+            $balance,
+            $amount,
+            gateway: $gatewayName,
+            description: $description,
+            operation_identifier: 'payment',
+            operation_uuid: Str::orderedUuid()->toString(),
+        );
+        $increase->createOrFail();
+        $operation = $increase->getOperation();
+
+        // Initialization gateway
+        $gateway = Omnipay::create($gatewayConfig['omnipay_class']);
+        if (! empty($gatewayConfig['omnipay_initialize'])) {
+            $gateway->initialize($gatewayConfig['omnipay_initialize']);
+        }
+
+        $response = $gateway->purchase(array_filter([
+            'amount'        => $amount,
+            'currency'      => $balance->currency->value,
+            'returnUrl'     => $gatewayConfig['returnUrl'] ?? null,
+            'transactionId' => $operation->operation_uuid,
+            'description'   => $operation->description,
+            'capture'       => $gatewayConfig['capture'] ?? null,
+            'card'          => $card,
+        ], fn($value) => ! is_null($value)))->send();
+
+        $operation->state = OperationStateEnum::Pending;
+        $operation->saveOrFail();
+
+        if ($response->isSuccessful()) {
+            DatabaseHelper::transaction(function() use (&$increase) {
+                $increase->executeOrFail();
+            });
+        }
+
+        return new Payment(
+            $increase,
+            $response
+        );
     }
 }

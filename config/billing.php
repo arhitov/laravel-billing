@@ -68,6 +68,28 @@ return [
     ],
 
     /**
+     * Gateway for createPayment
+     * The list contains example data. If you don't use gateways, you can delete this list.
+     */
+    'omnipay_gateway' => [
+        'default' => 'dummy',
+        'gateways' => [
+            'dummy' => [
+                'omnipay_class' => 'Dummy',
+            ],
+            'yookassa' => [
+                'omnipay_class' => 'YooKassa',
+                'omnipay_initialize' => [
+                    'shop_id' => 54401,
+                    'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
+                ],
+                'returnUrl' => 'https://www.example.com/pay',
+                'capture' => true,
+            ]
+        ],
+    ],
+
+    /**
      * Using cache
      * array|null
      */

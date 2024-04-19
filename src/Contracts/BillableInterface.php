@@ -6,11 +6,13 @@ use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Exceptions;
 use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\CreditCard;
+use Arhitov\LaravelBilling\Models\Payment;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Omnipay\Common\CreditCard as OmnipayCreditCard;
 
 interface BillableInterface
 {
@@ -115,4 +117,18 @@ interface BillableInterface
         Carbon  $expiry_at = null,
         string  $uuid = null,
     ): Subscription;
+
+    /**
+     * ***************
+     * *** Payment ***
+     * ***************
+     */
+
+    public function createPayment(
+        float                   $amount,
+        string                  $description,
+        Balance|string          $balance = null,
+        string                  $gatewayName = null,
+        OmnipayCreditCard|array $card = null,
+    ): Payment;
 }

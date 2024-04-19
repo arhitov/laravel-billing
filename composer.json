@@ -9,7 +9,8 @@
         "billing",
         "cashier",
         "credit",
-        "subscriptions"
+        "subscriptions",
+        "omnipay"
     ],
     "homepage": "https://github.com/arhitov/laravel-billing",
     "authors": [
@@ -23,12 +24,23 @@
         "php": "^8.2",
         "arhitov/laravel-helpers": "^0.1",
         "arhitov/laravel-package-helpers": "^0.1.2",
+        "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10",
-        "watson/validating": "^8.1"
+        "omnipay/common": "^3",
+        "php-http/curl-client": "^2.3",
+        "php-http/httplug": "^2.4",
+        "watson/validating": "^8.2"
     },
     "require-dev": {
+        "arhitov/omnipay-yookassa": "^5.0.1",
+        "omnipay/dummy": "*",
+        "omnipay/tests": "*",
         "orchestra/testbench": "*",
         "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "Omnipay/Dummy": "YooKassa driver for Omnipay payment processing library",
+        "arhitov/omnipay-yookassa": "YooKassa driver for Omnipay payment processing library"
     },
     "autoload": {
         "psr-4": {
