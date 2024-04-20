@@ -9,8 +9,6 @@ use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
 use Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException;
 use Arhitov\LaravelBilling\Exceptions\Common\AmountException;
-use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
-use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException;
 use Arhitov\LaravelBilling\Exceptions\SubscriptionNotFoundException;
 use Arhitov\LaravelBilling\Helpers\DatabaseHelper;
 use Arhitov\LaravelBilling\Increase;
@@ -19,6 +17,7 @@ use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Models\CreditCard;
 use Arhitov\LaravelBilling\Models\Payment;
 use Arhitov\LaravelBilling\Models\Subscription;
+use Arhitov\LaravelBilling\OmnipayGateway;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
@@ -376,21 +375,13 @@ trait ModelOwnerExpandTrait
             default             => $balance,
         };
 
-        $gatewayName ??= config('billing.omnipay_gateway.default', null);
-        if (empty($gatewayName)) {
-            throw new GatewayNotSpecifiedException();
-        }
-
-        $gatewayConfig = config("billing.omnipay_gateway.gateways.{$gatewayName}", null);
-        if (is_null($gatewayConfig)) {
-            throw new GatewayNotFoundException($gatewayName);
-        }
+        $omnipayGateway = new OmnipayGateway($gatewayName);
 
         // Creating a balance increase record
         $increase = new Increase(
             $balance,
             $amount,
-            gateway: $gatewayName,
+            gateway: $omnipayGateway->getGatewayName(),
             description: $description,
             operation_identifier: 'payment',
             operation_uuid: Str::orderedUuid()->toString(),
@@ -398,19 +389,13 @@ trait ModelOwnerExpandTrait
         $increase->createOrFail();
         $operation = $increase->getOperation();
 
-        // Initialization gateway
-        $gateway = Omnipay::create($gatewayConfig['omnipay_class']);
-        if (! empty($gatewayConfig['omnipay_initialize'])) {
-            $gateway->initialize($gatewayConfig['omnipay_initialize']);
-        }
-
-        $response = $gateway->purchase(array_filter([
+        $response = $omnipayGateway->getGateway()->purchase(array_filter([
             'amount'        => $amount,
             'currency'      => $balance->currency->value,
-            'returnUrl'     => $gatewayConfig['returnUrl'] ?? null,
+            'returnUrl'     => $omnipayGateway->getReturnUrl(),
             'transactionId' => $operation->operation_uuid,
             'description'   => $operation->description,
-            'capture'       => $gatewayConfig['capture'] ?? null,
+            'capture'       => $omnipayGateway->getCapture(),
             'card'          => $card,
         ], fn($value) => ! is_null($value)))->send();
 
