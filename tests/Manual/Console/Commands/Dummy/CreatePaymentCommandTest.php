@@ -2,6 +2,7 @@
 
 namespace Arhitov\LaravelBilling\Tests\Manual\Console\Commands\Dummy;
 
+use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Tests\ConsoleCommandsTestCase;
 
 class CreatePaymentCommandTest extends ConsoleCommandsTestCase
@@ -15,8 +16,10 @@ class CreatePaymentCommandTest extends ConsoleCommandsTestCase
         $owner = $this->createOwner();
         $balance = $owner->getBalanceOrCreate();
         $amount = '123.45';
+        $gateway = 'dummy';
 
         $this->assertEquals(0, $balance->amount);
+        $this->assertEquals(0, Operation::all()->count());
 
         $cardData = $this->getDataValidCard('omnipay_dummy_success');
 
@@ -24,7 +27,7 @@ class CreatePaymentCommandTest extends ConsoleCommandsTestCase
             ->artisan('billing:create-payment', [
                 'balance'   => $balance->getKey(),
                 'amount'    => $amount,
-                '--gateway' => 'dummy',
+                '--gateway' => $gateway,
             ])
             ->expectsQuestion('Please input card number?', $cardData['number'])
             ->expectsQuestion('Please input card expiry?', $cardData['expiryMonth'] . '/' . $cardData['expiryYear'])
@@ -36,5 +39,13 @@ class CreatePaymentCommandTest extends ConsoleCommandsTestCase
             ->assertOk();
 
         $this->assertEquals($amount, $owner->getBalanceOrFail()->amount);
+
+        /** @var Operation|null $operation */
+        $operation = Operation::get()?->first();
+        $this->assertInstanceOf(Operation::class, $operation);
+        $this->assertEquals($gateway, $operation->gateway);
+        $this->assertEquals($amount, $operation->amount);
+        $this->assertEquals($balance->getKey(), $operation->recipient_balance_id);
+        $this->assertEquals('succeeded', $operation->state->value);
     }
 }
