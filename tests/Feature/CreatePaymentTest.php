@@ -27,13 +27,22 @@ class CreatePaymentTest extends FeatureTestCase
         $owner = $this->createOwner();
         $owner->getBalanceOrCreate($balanceKey);
 
-        $owner->createPayment(
+        $payment = $owner->createPayment(
             100,
             'Test payment',
             $balanceKey,
             gatewayName: 'billing-feature-create-payment-dummy',
             card: $this->getDataValidCard(),
         );
+
+        $response = $payment->getResponse();
+        $operation = $payment->getIncrease()->getOperation();
+        $gatewayPaymentId = $response->getTransactionReference();
+        $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
+
+        $this->assertEquals($gatewayPaymentId, $operation->gateway_payment_id);
+        $this->assertEquals($gatewayPaymentStatus, $operation->gateway_payment_status);
+
         $this->assertTrue(true);
     }
 

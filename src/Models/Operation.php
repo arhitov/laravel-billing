@@ -17,6 +17,8 @@ use Watson\Validating\ValidatingTrait;
  * @property string $operation_uuid
  * @property string $linked_operation_id
  * @property string $gateway
+ * @property ?string $gateway_payment_id
+ * @property ?string $gateway_payment_status
  * @property float $amount
  * @property string $sender_balance_id
  * @property float $sender_amount_before
@@ -60,6 +62,8 @@ class Operation extends Model
         'operation_uuid',
         'linked_operation_id',
         'gateway',
+        'gateway_payment_id',
+        'gateway_payment_status',
         'amount',
         'currency',
         'sender_balance_id',
@@ -78,20 +82,22 @@ class Operation extends Model
      * @var array[]
      */
     protected $rules = [
-        'operation_identifier' => ['nullable', 'string'],
-        'operation_uuid' => ['required', 'string'],
-        'linked_operation_id' => ['nullable', 'int'],
-        'gateway' => ['required', 'string', 'max:50'],
-        'amount' => ['required', 'numeric'],
-        'currency' => ['required', 'in:class:' . CurrencyEnum::class],
-        'sender_balance_id' => ['required', 'int'],
-        'sender_amount_before' => ['nullable', 'numeric'],
-        'sender_amount_after' => ['nullable', 'numeric'],
-        'recipient_balance_id' => ['required', 'int'],
+        'operation_identifier'    => ['nullable', 'string'],
+        'operation_uuid'          => ['required', 'string'],
+        'linked_operation_id'     => ['nullable', 'int'],
+        'gateway'                 => ['required', 'string', 'max:50'],
+        'gateway_payment_id'      => ['nullable', 'string', 'max:100'],
+        'gateway_payment_status'  => ['nullable', 'string', 'max:100'],
+        'amount'                  => ['required', 'numeric'],
+        'currency'                => ['required', 'in:class:' . CurrencyEnum::class],
+        'sender_balance_id'       => ['required', 'int'],
+        'sender_amount_before'    => ['nullable', 'numeric'],
+        'sender_amount_after'     => ['nullable', 'numeric'],
+        'recipient_balance_id'    => ['required', 'int'],
         'recipient_amount_before' => ['nullable', 'numeric'],
-        'recipient_amount_after' => ['nullable', 'numeric'],
-        'description' => ['nullable', 'string', 'max:1000'],
-        'state' => ['required', 'in:class:' . OperationStateEnum::class],
+        'recipient_amount_after'  => ['nullable', 'numeric'],
+        'description'             => ['nullable', 'string', 'max:1000'],
+        'state'                   => ['required', 'in:class:' . OperationStateEnum::class],
     ];
 
     /**
@@ -100,19 +106,21 @@ class Operation extends Model
      * @var array
      */
     protected $attributes = [
-        'operation_identifier' => null,
-        'linked_operation_id' => null,
-        'description' => null,
-        'sender_amount_before' => null,
-        'sender_amount_after' => null,
-        'recipient_amount_before' => null,
-        'recipient_amount_after' => null,
-        'state_pending_at' => null,
+        'operation_identifier'         => null,
+        'linked_operation_id'          => null,
+        'gateway_payment_id'           => null,
+        'gateway_payment_status'       => null,
+        'description'                  => null,
+        'sender_amount_before'         => null,
+        'sender_amount_after'          => null,
+        'recipient_amount_before'      => null,
+        'recipient_amount_after'       => null,
+        'state_pending_at'             => null,
         'state_waiting_for_capture_at' => null,
-        'state_succeeded_at' => null,
-        'state_canceled_at' => null,
-        'state_refund_at' => null,
-        'state_errored_at' => null,
+        'state_succeeded_at'           => null,
+        'state_canceled_at'            => null,
+        'state_refund_at'              => null,
+        'state_errored_at'             => null,
     ];
 
     /**
@@ -121,20 +129,20 @@ class Operation extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'operation_uuid' => 'string',
-        'amount' => 'float',
-        'currency' => CurrencyEnum::class,
-        'sender_amount_before' => 'float',
-        'sender_amount_after' => 'float',
-        'recipient_amount_before' => 'float',
-        'recipient_amount_after' => 'float',
-        'state' => OperationStateEnum::class,
-        'state_pending_at' => 'datetime',
+        'operation_uuid'               => 'string',
+        'amount'                       => 'float',
+        'currency'                     => CurrencyEnum::class,
+        'sender_amount_before'         => 'float',
+        'sender_amount_after'          => 'float',
+        'recipient_amount_before'      => 'float',
+        'recipient_amount_after'       => 'float',
+        'state'                        => OperationStateEnum::class,
+        'state_pending_at'             => 'datetime',
         'state_waiting_for_capture_at' => 'datetime',
-        'state_succeeded_at' => 'datetime',
-        'state_canceled_at' => 'datetime',
-        'state_refund_at' => 'datetime',
-        'state_errored_at' => 'datetime',
+        'state_succeeded_at'           => 'datetime',
+        'state_canceled_at'            => 'datetime',
+        'state_refund_at'              => 'datetime',
+        'state_errored_at'             => 'datetime',
     ];
 
     /**

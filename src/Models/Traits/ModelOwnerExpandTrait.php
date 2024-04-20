@@ -399,6 +399,8 @@ trait ModelOwnerExpandTrait
             'card'          => $card,
         ], fn($value) => ! is_null($value)))->send();
 
+        $operation->gateway_payment_id = $response->getTransactionReference();
+        $operation->gateway_payment_status = method_exists($response, 'getState') ? $response->getState() : null;
         $operation->state = OperationStateEnum::Pending;
         $operation->saveOrFail();
 
