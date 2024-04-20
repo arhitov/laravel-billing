@@ -76,6 +76,7 @@ return [
         'gateways' => [
             'dummy' => [
                 'omnipay_class' => 'Dummy',
+                'card_required' => true,
             ],
             'yookassa' => [
                 'omnipay_class' => 'YooKassa',
@@ -86,6 +87,9 @@ return [
                 'returnUrl' => 'https://www.example.com/pay',
                 'capture' => true,
             ]
+        ],
+        'payment' => [
+            'default_description' => 'Payment for site services',
         ],
     ],
 

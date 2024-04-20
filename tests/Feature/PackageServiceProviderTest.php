@@ -20,5 +20,7 @@ class PackageServiceProviderTest extends FeatureTestCase
         $this->assertContains('billing:get-balance', $artisanCommandList);
         $this->assertContains('billing:decrease-balance', $artisanCommandList);
         $this->assertContains('billing:increase-balance', $artisanCommandList);
+        $this->assertContains('billing:create-payment', $artisanCommandList);
+        $this->assertContains('billing:get-payment-information', $artisanCommandList);
     }
 }
