@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Console\Commands;
 
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
+use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\OmnipayGateway;
 use Illuminate\Console\Command;
 use Omnipay\Common\Exception\InvalidResponseException;
@@ -56,11 +57,24 @@ class GetPaymentInformationCommand extends Command
             return self::FAILURE;
         }
 
+        $transactionId = $response->getTransactionId();
+        if ($transactionId) {
+            /** @var Operation|null $operation */
+            $operation = Operation::query()
+                                  ->select(['state'])
+                                  ->where('operation_uuid', '=', $response->getTransactionId())
+                                  ->first();
+            $operationState = $operation->state->value ?? '-';
+        } else {
+            $operationState = '-';
+        }
+
         $this->info("TransactionReference: {$response->getTransactionReference()}");
-        $this->info('TransactionId: ' . ($response->getTransactionId() ?? '-'));
+        $this->info('TransactionId: ' . ($transactionId ?? '-'));
         $this->info('Paid: ' . ($response->isSuccessful() ? 'YES' : 'NO'));
         $this->info("Amount: {$response->getAmount()} {$response->getCurrency()}");
-        $this->info("State: {$response->getState()}");
+        $this->info("State payment: {$response->getState()}");
+        $this->info("State operation: {$operationState}");
         if ($response->isSuccessful()) {
             $this->info("Payer: {$response->getPayer()}");
             $this->info("Payment date: {$response->getPaymentDate()->format(DATE_ATOM)}");
