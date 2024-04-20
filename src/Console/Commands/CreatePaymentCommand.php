@@ -100,6 +100,9 @@ class CreatePaymentCommand extends Command
             );
         }
 
+        $this->info("Created payment: {$payment->getIncrease()->getOperation()->getKey()}");
+        $this->info("Payment operation_uuid: {$payment->getIncrease()->getOperation()->operation_uuid}");
+
         if ($payment->getResponse()->isSuccessful()) {
             $this->info('Payment successful');
             return self::SUCCESS;
