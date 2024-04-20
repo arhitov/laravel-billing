@@ -27,6 +27,7 @@ use Watson\Validating\ValidatingTrait;
  * @property OperationStateEnum $state
  * @property string $description
  * @property ?Carbon $state_pending_at
+ * @property ?Carbon $state_waiting_for_capture_at
  * @property ?Carbon $state_succeeded_at
  * @property ?Carbon $state_canceled_at
  * @property ?Carbon $state_refund_at
@@ -107,6 +108,7 @@ class Operation extends Model
         'recipient_amount_before' => null,
         'recipient_amount_after' => null,
         'state_pending_at' => null,
+        'state_waiting_for_capture_at' => null,
         'state_succeeded_at' => null,
         'state_canceled_at' => null,
         'state_refund_at' => null,
@@ -128,6 +130,7 @@ class Operation extends Model
         'recipient_amount_after' => 'float',
         'state' => OperationStateEnum::class,
         'state_pending_at' => 'datetime',
+        'state_waiting_for_capture_at' => 'datetime',
         'state_succeeded_at' => 'datetime',
         'state_canceled_at' => 'datetime',
         'state_refund_at' => 'datetime',
