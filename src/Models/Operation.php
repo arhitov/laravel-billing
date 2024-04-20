@@ -18,7 +18,7 @@ use Watson\Validating\ValidatingTrait;
  * @property string $linked_operation_id
  * @property string $gateway
  * @property ?string $gateway_payment_id
- * @property ?string $gateway_payment_status
+ * @property ?string $gateway_payment_state
  * @property float $amount
  * @property string $sender_balance_id
  * @property float $sender_amount_before
@@ -63,7 +63,7 @@ class Operation extends Model
         'linked_operation_id',
         'gateway',
         'gateway_payment_id',
-        'gateway_payment_status',
+        'gateway_payment_state',
         'amount',
         'currency',
         'sender_balance_id',
@@ -87,7 +87,7 @@ class Operation extends Model
         'linked_operation_id'     => ['nullable', 'int'],
         'gateway'                 => ['required', 'string', 'max:50'],
         'gateway_payment_id'      => ['nullable', 'string', 'max:100'],
-        'gateway_payment_status'  => ['nullable', 'string', 'max:100'],
+        'gateway_payment_state'   => ['nullable', 'string', 'max:100'],
         'amount'                  => ['required', 'numeric'],
         'currency'                => ['required', 'in:class:' . CurrencyEnum::class],
         'sender_balance_id'       => ['required', 'int'],
@@ -109,7 +109,7 @@ class Operation extends Model
         'operation_identifier'         => null,
         'linked_operation_id'          => null,
         'gateway_payment_id'           => null,
-        'gateway_payment_status'       => null,
+        'gateway_payment_state'        => null,
         'description'                  => null,
         'sender_amount_before'         => null,
         'sender_amount_after'          => null,

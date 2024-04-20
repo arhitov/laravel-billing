@@ -41,7 +41,7 @@ class CreatePaymentTest extends FeatureTestCase
         $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
 
         $this->assertEquals($gatewayPaymentId, $operation->gateway_payment_id);
-        $this->assertEquals($gatewayPaymentStatus, $operation->gateway_payment_status);
+        $this->assertEquals($gatewayPaymentStatus, $operation->gateway_payment_state);
 
         $this->assertTrue(true);
     }
