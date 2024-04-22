@@ -115,19 +115,6 @@ return [
     ],
 
     /**
-     * Эквайринг от ЭВОТОР
-     * array|null
-     */
-    'fiscalization' => [
-        'default' => 'qwe',
-        'gateways' => [
-            'qwe' => [
-
-            ],
-        ],
-    ],
-
-    /**
      * Rounding.
      */
     'rounding' => [
