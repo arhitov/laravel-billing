@@ -4,7 +4,7 @@ namespace Arhitov\LaravelBilling\Tests\Manual\Console\Commands\Dummy;
 
 use Arhitov\LaravelBilling\Tests\ConsoleCommandsTestCase;
 
-class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
+class GetOmnipayPaymentInformationCommandTest extends ConsoleCommandsTestCase
 {
     const GATEWAY = 'dummy';
 
@@ -40,7 +40,7 @@ class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
         $this->assertNotEmpty($transaction);
 
         $this
-            ->artisan('billing:get-payment-omnipay-information', [
+            ->artisan('billing:get-omnipay-payment-information', [
                 'transaction' => $transaction,
                 '--gateway'   => self::GATEWAY,
             ])

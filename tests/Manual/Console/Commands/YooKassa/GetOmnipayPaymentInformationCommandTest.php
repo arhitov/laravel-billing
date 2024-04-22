@@ -4,7 +4,7 @@ namespace Arhitov\LaravelBilling\Tests\Manual\Console\Commands\YooKassa;
 
 use Arhitov\LaravelBilling\Tests\ConsoleCommandsTestCase;
 
-class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
+class GetOmnipayPaymentInformationCommandTest extends ConsoleCommandsTestCase
 {
     const GATEWAY = 'yookassa';
 
@@ -36,7 +36,7 @@ class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
         $this->assertNotEmpty($transaction);
 
         $this
-            ->artisan('billing:get-payment-omnipay-information', [
+            ->artisan('billing:get-omnipay-payment-information', [
                 'transaction' => $transaction,
                 '--gateway'   => self::GATEWAY,
             ])
@@ -58,7 +58,7 @@ class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
     public function testCommandNotFound()
     {
         $this
-            ->artisan('billing:get-payment-omnipay-information', [
+            ->artisan('billing:get-omnipay-payment-information', [
                 'transaction' => '11111111-2222-3333-4444-555555555555',
                 '--gateway'   => self::GATEWAY,
             ])

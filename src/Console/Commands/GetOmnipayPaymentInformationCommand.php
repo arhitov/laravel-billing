@@ -8,15 +8,15 @@ use Arhitov\LaravelBilling\OmnipayGateway;
 use Illuminate\Console\Command;
 use Omnipay\Common\Exception\InvalidResponseException;
 
-#[\Symfony\Component\Console\Attribute\AsCommand(name: 'billing:get-payment-omnipay-information')]
-class GetPaymentOmnipayInformationCommand extends Command
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'billing:get-omnipay-payment-information')]
+class GetOmnipayPaymentInformationCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'billing:get-payment-omnipay-information {transaction} {--gateway=}';
+    protected $signature = 'billing:get-omnipay-payment-information {transaction} {--gateway=}';
 
     /**
      * The console command description.
