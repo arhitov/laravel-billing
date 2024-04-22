@@ -85,7 +85,15 @@ return [
                     'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
                 ],
                 'returnUrl' => 'https://www.example.com/pay',
-                'capture' => true,
+            ],
+            'yookassa-two-step' => [
+                'omnipay_class' => 'YooKassa',
+                'omnipay_initialize' => [
+                    'shop_id' => 54401,
+                    'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
+                ],
+                'returnUrl' => 'https://www.example.com/pay',
+                'capture' => false,
             ]
         ],
         'payment' => [
@@ -102,6 +110,19 @@ return [
             'owner_balance_amount' => [
                 'prefix' => 'owner_balance_amount',
                 'ttl' => '10 minutes',
+            ],
+        ],
+    ],
+
+    /**
+     * Эквайринг от ЭВОТОР
+     * array|null
+     */
+    'fiscalization' => [
+        'default' => 'qwe',
+        'gateways' => [
+            'qwe' => [
+
             ],
         ],
     ],
