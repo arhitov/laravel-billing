@@ -9,6 +9,7 @@ use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Omnipay\Common\Message\AbstractResponse;
 use Watson\Validating\ValidatingTrait;
 
 /**
@@ -20,6 +21,7 @@ use Watson\Validating\ValidatingTrait;
  * @property ?string $gateway_payment_id
  * @property ?string $gateway_payment_state
  * @property float $amount
+ * @property CurrencyEnum $currency
  * @property string $sender_balance_id
  * @property float $sender_amount_before
  * @property float $sender_amount_after
@@ -40,6 +42,7 @@ use Watson\Validating\ValidatingTrait;
  * @property Balance $sender_balance
  * @property Balance $recipient_balance
  *
+ * @method static get($columns = ['*']): Collection
  * @method static make(array $attributes = []): Builder|Model
  * @method lockForUpdate(): Builder
  * @method static find($id, $columns = ['*']): Builder|Builder[]|Collection|Model
@@ -195,5 +198,29 @@ class Operation extends Model
     public function recipient_balance(): BelongsTo
     {
         return $this->recipientBalance();
+    }
+
+    /**
+     * @param AbstractResponse $response
+     * @return $this
+     */
+    public function setStateByOmnipayGateway(AbstractResponse $response): self
+    {
+        $state = method_exists($response, 'getState')
+            ? $response->getState()
+            : match (true) {
+                $response->isSuccessful() => 'success',
+                $response->isCancelled() => 'cancel',
+            };
+
+        $this->state = match (true) {
+            'waiting_for_capture' === $state => OperationStateEnum::WaitingForCapture,
+            $response->isSuccessful() => OperationStateEnum::Succeeded,
+            $response->isCancelled() => OperationStateEnum::Canceled,
+            default => $this->state,
+        };
+        $this->gateway_payment_state = $state;
+
+        return $this;
     }
 }

@@ -20,4 +20,12 @@ enum OperationStateEnum: string
             OperationStateEnum::WaitingForCapture->value,
         ]);
     }
+
+    public function isPaid(): bool
+    {
+        return in_array($this->value, [
+            OperationStateEnum::WaitingForCapture->value,
+            OperationStateEnum::Succeeded->value,
+        ]);
+    }
 }
