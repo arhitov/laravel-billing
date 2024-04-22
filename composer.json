@@ -1,7 +1,7 @@
 {
     "name": "arhitov/laravel-billing",
     "description": "Billing module for laravel projects",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -23,7 +23,7 @@
     "require": {
         "php": "^8.2",
         "arhitov/laravel-helpers": "^0.1",
-        "arhitov/laravel-package-helpers": "^0.1.2",
+        "arhitov/laravel-package-helpers": "^0.2.1",
         "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10",
         "omnipay/common": "^3",
@@ -56,8 +56,18 @@
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
+    "extra":{
+        "laravel":{
+            "providers":[
+                "Arhitov\\LaravelBilling\\Providers\\PackageServiceProvider"
+            ]
+        }
+    },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "RC",
     "prefer-stable": true,
@@ -68,6 +78,14 @@
         ],
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "test": "@php vendor/bin/phpunit -c ./ --color",
+        "ci": [
+            "@clear",
+            "@prepare",
+            "@test"
+        ],
+
+
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
@@ -76,9 +94,6 @@
         ],
         "lint": [
             "@php vendor/bin/phpstan analyse"
-        ],
-        "test": [
-            "@php vendor/bin/phpunit"
         ]
     }
 }

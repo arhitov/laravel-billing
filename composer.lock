@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffdb8583ae5aca9b2beaa253df46af7d",
+    "content-hash": "fa2c316fa1651cbedf8d5669a5212056",
     "packages": [
         {
             "name": "arhitov/laravel-helpers",
@@ -53,16 +53,16 @@
         },
         {
             "name": "arhitov/laravel-package-helpers",
-            "version": "0.1.2",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/laravel-package-helpers.git",
-                "reference": "5f26a21d493bd7f6403d0226fae1c4eaea213759"
+                "reference": "7b9b4ba4484a2843b070e10922b895220f48c9d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/laravel-package-helpers/zipball/5f26a21d493bd7f6403d0226fae1c4eaea213759",
-                "reference": "5f26a21d493bd7f6403d0226fae1c4eaea213759",
+                "url": "https://api.github.com/repos/arhitov/laravel-package-helpers/zipball/7b9b4ba4484a2843b070e10922b895220f48c9d0",
+                "reference": "7b9b4ba4484a2843b070e10922b895220f48c9d0",
                 "shasum": ""
             },
             "require": {
@@ -94,9 +94,9 @@
             ],
             "support": {
                 "issues": "https://github.com/arhitov/laravel-package-helpers/issues",
-                "source": "https://github.com/arhitov/laravel-package-helpers/tree/0.1.2"
+                "source": "https://github.com/arhitov/laravel-package-helpers/tree/0.2.1"
             },
-            "time": "2024-04-18T20:29:28+00:00"
+            "time": "2024-04-22T10:19:51+00:00"
         },
         {
             "name": "brick/math",
