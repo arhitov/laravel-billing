@@ -79,25 +79,4 @@ abstract class FeatureTestCase extends TestCase
 //            'shippingPhone' => '(555) 987-6543',
         ], $list[$key]);
     }
-
-    protected function getConfigOmnipayGatewayDummy(): array
-    {
-        return [
-            'omnipay_class' => 'Dummy',
-            'capture' => true,
-        ];
-    }
-
-    protected function getConfigOmnipayGatewayYooKassa(): array
-    {
-        return [
-            'omnipay_class' => 'YooKassa',
-            'omnipay_initialize' => [
-                'shop_id' => 54401,
-                'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
-            ],
-            'returnUrl' => 'https://www.example.com/pay',
-            'capture' => true,
-        ];
-    }
 }

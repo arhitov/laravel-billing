@@ -7,16 +7,6 @@ use Omnipay\Common\CreditCard;
 
 class CreatePaymentTest extends FeatureTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Append test dummy gateway
-        $billingConfigSaved = config('billing');
-        $billingConfigSaved['omnipay_gateway']['gateways']['billing-feature-create-payment-dummy'] = $this->getConfigOmnipayGatewayDummy();
-        $billingConfigSaved['omnipay_gateway']['gateways']['billing-feature-create-payment-yookassa'] = $this->getConfigOmnipayGatewayYooKassa();
-        config(['billing' => $billingConfigSaved]);
-    }
 
     /**
      * @return void
@@ -31,7 +21,7 @@ class CreatePaymentTest extends FeatureTestCase
             100,
             'Test payment',
             $balanceKey,
-            gatewayName: 'billing-feature-create-payment-dummy',
+            gatewayName: 'dummy',
             card: $this->getDataValidCard(),
         );
 
@@ -63,7 +53,7 @@ class CreatePaymentTest extends FeatureTestCase
         $payment = $owner->createPayment(
             $balanceAmount,
             'Test payment',
-            gatewayName: 'billing-feature-create-payment-dummy',
+            gatewayName: 'dummy',
             card: $card,
         );
 
@@ -90,13 +80,13 @@ class CreatePaymentTest extends FeatureTestCase
         $payment = $owner->createPayment(
             $balanceAmount,
             'Test payment',
-            gatewayName: 'billing-feature-create-payment-yookassa',
+            gatewayName: 'yookassa',
         );
 
         $this->assertFalse($payment->getResponse()->isSuccessful());
         $this->assertTrue($payment->getResponse()->isRedirect());
         $this->assertEquals(
-            $this->getConfigOmnipayGatewayYooKassa()['returnUrl'],
+            config('billing.omnipay_gateway.gateways.yookassa.returnUrl'),
             $payment->getResponse()->getRequest()->getReturnUrl()
         );
 
