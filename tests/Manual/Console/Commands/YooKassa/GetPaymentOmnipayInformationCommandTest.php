@@ -4,7 +4,7 @@ namespace Arhitov\LaravelBilling\Tests\Manual\Console\Commands\YooKassa;
 
 use Arhitov\LaravelBilling\Tests\ConsoleCommandsTestCase;
 
-class GetPaymentInformationCommandTest extends ConsoleCommandsTestCase
+class GetPaymentOmnipayInformationCommandTest extends ConsoleCommandsTestCase
 {
     const GATEWAY = 'yookassa';
 
@@ -32,17 +32,17 @@ class GetPaymentInformationCommandTest extends ConsoleCommandsTestCase
             ->assertSuccessful()
             ->assertOk();
 
-        $operationUuid = $balance->operation()->firstOrFail()->operation_uuid;
-        $this->assertNotEmpty($operationUuid);
+        $transaction = $balance->operation()->firstOrFail()->gateway_payment_id;
+        $this->assertNotEmpty($transaction);
 
         $this
-            ->artisan('billing:get-payment-information', [
-                'operation' => $operationUuid,
+            ->artisan('billing:get-payment-omnipay-information', [
+                'transaction' => $transaction,
+                '--gateway'   => self::GATEWAY,
             ])
-            ->expectsOutputToContain('Gateway: ' . self::GATEWAY)
             ->expectsOutputToContain('TransactionReference: ')
             ->expectsOutputToContain('TransactionId: ')
-            ->expectsOutputToContain('Paid: NO')
+            ->expectsOutputToContain('Paid: ')
             ->expectsOutputToContain('Amount: ')
             ->expectsOutputToContain('State payment: ')
             ->expectsOutputToContain('State operation: ')
@@ -58,10 +58,11 @@ class GetPaymentInformationCommandTest extends ConsoleCommandsTestCase
     public function testCommandNotFound()
     {
         $this
-            ->artisan('billing:get-payment-information', [
-                'operation' => '11111111-2222-3333-4444-555555555555',
+            ->artisan('billing:get-payment-omnipay-information', [
+                'transaction' => '11111111-2222-3333-4444-555555555555',
+                '--gateway'   => self::GATEWAY,
             ])
-            ->expectsOutputToContain('Operation not found!')
+            ->expectsOutputToContain('Payment doesn\'t exist or access denied')
             ->assertFailed();
     }
 }

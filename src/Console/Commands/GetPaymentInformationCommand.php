@@ -16,7 +16,7 @@ class GetPaymentInformationCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'billing:get-payment-information {transaction} {--gateway=}';
+    protected $signature = 'billing:get-payment-information {operation}';
 
     /**
      * The console command description.
@@ -32,50 +32,47 @@ class GetPaymentInformationCommand extends Command
      */
     public function handle(): int
     {
-        $transaction = $this->argument('transaction');
-        $gateway = $this->option('gateway') ?? null;
+        $operationUuid = $this->argument('operation');
 
-        try {
-            $omnipayGateway = new OmnipayGateway($gateway);
-        } catch (GatewayNotFoundException) {
-            $this->error('Gateway not found!');
+        /** @var Operation|null $operation */
+        $operation = Operation::query()
+            ->where('operation_uuid', '=', $operationUuid)
+            ->first();
+
+        if (! $operation) {
+            $this->error('Operation not found!');
             return self::FAILURE;
         }
 
-        if (! $omnipayGateway->isSupportDetails()) {
-            $this->warn('This gateway cannot receive payment information.');
-            return self::FAILURE;
+        $gateway = $operation->gateway;
+        $response = null;
+        if (! empty($operation->gateway_payment_id)) {
+            try {
+                $omnipayGateway = new OmnipayGateway($operation->gateway);
+                if ($omnipayGateway->isSupportDetails()) {
+                    $details = $omnipayGateway->getGateway()->details([
+                        'transactionReference' => $operation->gateway_payment_id,
+                    ]);
+                    /** @var \Omnipay\Common\Message\AbstractResponse $response */
+                    $response = $details->send();
+
+                    $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
+                };
+            } catch (GatewayNotFoundException) {
+                $gateway .= ' (Error: Gateway not found!)';
+            } catch (InvalidResponseException $exception) {
+                $gateway .= " (Error: {$exception->getMessage()})";
+            }
         }
 
-        $details = $omnipayGateway->getGateway()->details([
-            'transactionReference' => $transaction,
-        ]);
-        try {
-            $response = $details->send();
-        } catch (InvalidResponseException $exception) {
-            $this->error($exception->getMessage());
-            return self::FAILURE;
-        }
-
-        $transactionId = $response->getTransactionId();
-        if ($transactionId) {
-            /** @var Operation|null $operation */
-            $operation = Operation::query()
-                                  ->select(['state'])
-                                  ->where('operation_uuid', '=', $response->getTransactionId())
-                                  ->first();
-            $operationState = $operation->state->value ?? '-';
-        } else {
-            $operationState = '-';
-        }
-
-        $this->info("TransactionReference: {$response->getTransactionReference()}");
-        $this->info('TransactionId: ' . ($transactionId ?? '-'));
-        $this->info('Paid: ' . ($response->isSuccessful() ? 'YES' : 'NO'));
-        $this->info("Amount: {$response->getAmount()} {$response->getCurrency()}");
-        $this->info("State payment: {$response->getState()}");
-        $this->info("State operation: {$operationState}");
-        if ($response->isSuccessful()) {
+        $this->info("Gateway: {$gateway}");
+        $this->info('TransactionReference: '. ($response->gateway_payment_id ?? '-'));
+        $this->info('TransactionId: ' . $operation->operation_uuid);
+        $this->info('Paid: ' . ($operation->state->isPaid() ? 'YES' : 'NO'));
+        $this->info("Amount: {$operation->amount} {$operation->currency->value}");
+        $this->info('State payment: '. ($gatewayPaymentStatus ?? '-'));
+        $this->info("State operation: {$operation->state->value}");
+        if ($response && $response->isSuccessful()) {
             $this->info("Payer: {$response->getPayer()}");
             $this->info("Payment date: {$response->getPaymentDate()->format(DATE_ATOM)}");
         }
