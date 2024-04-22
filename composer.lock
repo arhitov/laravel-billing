@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c4f58fd3ccad80ea9057cd846f4f50b",
+    "content-hash": "ffdb8583ae5aca9b2beaa253df46af7d",
     "packages": [
         {
             "name": "arhitov/laravel-helpers",
@@ -6094,16 +6094,16 @@
     "packages-dev": [
         {
             "name": "arhitov/omnipay-yookassa",
-            "version": "5.0.1",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/omnipay-yookassa.git",
-                "reference": "ca35338ba58ab3c8624202bfdd2c756334b50f48"
+                "reference": "ac8c385165918f9711d41ffc8c0fb99149b08495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/omnipay-yookassa/zipball/ca35338ba58ab3c8624202bfdd2c756334b50f48",
-                "reference": "ca35338ba58ab3c8624202bfdd2c756334b50f48",
+                "url": "https://api.github.com/repos/arhitov/omnipay-yookassa/zipball/ac8c385165918f9711d41ffc8c0fb99149b08495",
+                "reference": "ac8c385165918f9711d41ffc8c0fb99149b08495",
                 "shasum": ""
             },
             "require": {
@@ -6132,7 +6132,8 @@
             "authors": [
                 {
                     "name": "Alexander Arhitov",
-                    "email": "clgsru@gmail.com"
+                    "email": "clgsru@gmail.com",
+                    "homepage": "https://github.com/arhitov/"
                 },
                 {
                     "name": "Andrey Sokolov",
@@ -6185,7 +6186,7 @@
                 "issues": "https://github.com/arhitov/omnipay-yookassa/issues",
                 "source": "https://github.com/arhitov/omnipay-yookassa"
             },
-            "time": "2024-04-18T15:21:00+00:00"
+            "time": "2024-04-20T16:55:05+00:00"
         },
         {
             "name": "composer/semver",
@@ -10003,6 +10004,8 @@
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {
+        "ext-readline": "*"
+    },
     "plugin-api-version": "2.6.0"
 }

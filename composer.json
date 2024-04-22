@@ -1,7 +1,7 @@
 {
     "name": "arhitov/laravel-billing",
     "description": "Billing module for laravel projects",
-    "version": "0.1.1",
+    "version": "0.2.1",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -32,11 +32,12 @@
         "watson/validating": "^8.2"
     },
     "require-dev": {
-        "arhitov/omnipay-yookassa": "^5.0.1",
+        "arhitov/omnipay-yookassa": "^5.1.0",
         "omnipay/dummy": "*",
         "omnipay/tests": "*",
         "orchestra/testbench": "*",
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "ext-readline": "*"
     },
     "suggest": {
         "Omnipay/Dummy": "YooKassa driver for Omnipay payment processing library",
