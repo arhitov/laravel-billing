@@ -86,7 +86,7 @@ class CreatePaymentTest extends FeatureTestCase
         $this->assertFalse($payment->getResponse()->isSuccessful());
         $this->assertTrue($payment->getResponse()->isRedirect());
         $this->assertEquals(
-            config('billing.omnipay_gateway.gateways.yookassa.returnUrl'),
+            config('billing.omnipay_gateway.gateways.yookassa.return_url'),
             $payment->getResponse()->getRequest()->getReturnUrl()
         );
 

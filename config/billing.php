@@ -84,7 +84,7 @@ return [
                     'shop_id' => 54401,
                     'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
                 ],
-                'returnUrl' => 'https://www.example.com/pay',
+                'return_url' => 'https://www.example.com/pay',
             ],
             'yookassa-two-step' => [
                 'omnipay_class' => 'YooKassa',
@@ -92,7 +92,7 @@ return [
                     'shop_id' => 54401,
                     'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
                 ],
-                'returnUrl' => 'https://www.example.com/pay',
+                'return_url' => 'https://www.example.com/pay',
                 'capture' => false,
             ]
         ],

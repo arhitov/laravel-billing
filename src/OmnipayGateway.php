@@ -57,7 +57,7 @@ class OmnipayGateway
      */
     public function getReturnUrl(): ?string
     {
-        return $this->gatewayConfig['returnUrl'] ?? null;
+        return $this->gatewayConfig['return_url'] ?? null;
     }
 
     /**
