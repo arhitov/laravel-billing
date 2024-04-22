@@ -23,5 +23,6 @@ class PackageServiceProviderTest extends FeatureTestCase
         $this->assertContains('billing:create-payment', $artisanCommandList);
         $this->assertContains('billing:get-payment-information', $artisanCommandList);
         $this->assertContains('billing:get-omnipay-payment-information', $artisanCommandList);
+        $this->assertContains('billing:check-omnipay-payment-state', $artisanCommandList);
     }
 }
