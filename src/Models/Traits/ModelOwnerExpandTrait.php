@@ -378,13 +378,14 @@ trait ModelOwnerExpandTrait
         $omnipayGateway = new OmnipayGateway($gatewayName);
 
         // Creating a balance increase record
+        $operationUuid = Str::orderedUuid()->toString();
         $increase = new Increase(
             $balance,
             $amount,
             gateway: $omnipayGateway->getGatewayName(),
             description: $description,
             operation_identifier: 'payment',
-            operation_uuid: Str::orderedUuid()->toString(),
+            operation_uuid: $operationUuid,
         );
         $increase->createOrFail();
         $operation = $increase->getOperation();
@@ -392,7 +393,7 @@ trait ModelOwnerExpandTrait
         $response = $omnipayGateway->getGateway()->purchase(array_filter([
             'amount'        => $amount,
             'currency'      => $balance->currency->value,
-            'returnUrl'     => $omnipayGateway->getReturnUrl(),
+            'returnUrl'     => $omnipayGateway->getReturnUrl(['operation_uuid' => $operationUuid]),
             'transactionId' => $operation->operation_uuid,
             'description'   => $operation->description,
             'capture'       => $omnipayGateway->getCapture(),

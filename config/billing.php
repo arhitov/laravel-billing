@@ -94,6 +94,21 @@ return [
                 ],
                 'return_url' => 'https://www.example.com/pay',
                 'capture' => false,
+            ],
+            'yookassa-use-route-name' => [
+                'omnipay_class' => 'YooKassa',
+                'omnipay_initialize' => [
+                    'shop_id' => 54401,
+                    'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
+                ],
+                'return_route' => [
+                    'name' => 'yookassa-return-url',
+                    /**
+                     * If you specify "operation_uuid" with a null value, the value will be substituted automatically.
+                     * Other parameters will be added to the address bar.
+                     */
+                    'parameters' => ['operation_uuid' => null, 'order' => 123],
+                ],
             ]
         ],
         'payment' => [

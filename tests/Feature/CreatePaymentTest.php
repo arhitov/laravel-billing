@@ -7,6 +7,18 @@ use Omnipay\Common\CreditCard;
 
 class CreatePaymentTest extends FeatureTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        /** @var \Illuminate\Routing\Router $router */
+        $router = $this->app['router'];
+        $router->get('yookassa/return-url')->name('yookassa-return-url');
+
+        /** @var \Illuminate\Routing\UrlGenerator $url */
+        $url = $this->app['url'];
+        $url->forceScheme('https');
+    }
 
     /**
      * @return void
@@ -99,5 +111,30 @@ class CreatePaymentTest extends FeatureTestCase
 
         $this->assertNotEmpty($payment->getResponse()->getTransactionReference());
         $this->assertNotEmpty($payment->getResponse()->getRedirectUrl());
+    }
+
+    /**
+     * @depends testCreateByYooKassa
+     * @return void
+     */
+    public function testCreateUseRouteName()
+    {
+        $balanceAmount = 456;
+        $owner = $this->createOwner();
+        $owner->getBalanceOrCreate();
+
+        $payment = $owner->createPayment(
+            $balanceAmount,
+            'Test payment',
+            gatewayName: 'yookassa-use-route-name',
+        );
+
+        $returnUrl = $payment->getResponse()->getRequest()->getReturnUrl();
+
+        $this->assertNotEmpty($returnUrl);
+        $this->assertEquals(
+            route('yookassa-return-url', ['operation_uuid' => $payment->getIncrease()->getOperation()->operation_uuid, 'order' => 123]),
+            $returnUrl,
+        );
     }
 }

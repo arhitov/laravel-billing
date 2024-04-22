@@ -53,11 +53,31 @@ class OmnipayGateway
     }
 
     /**
+     * @param array $parameters using only for return_route
      * @return string|null
      */
-    public function getReturnUrl(): ?string
+    public function getReturnUrl(array $parameters = []): ?string
     {
-        return $this->gatewayConfig['return_url'] ?? null;
+        return match (true) {
+            ! empty($this->gatewayConfig['return_url']) => $this->gatewayConfig['return_url'],
+            ! empty($this->gatewayConfig['return_route']) => (function() use ($parameters) {
+                if (is_array($this->gatewayConfig['return_route'])) {
+                    $parametersConfig = $this->gatewayConfig['return_route']['parameters'] ?? [];
+                    array_walk(
+                        $parametersConfig,
+                        fn(&$value, $key) => $value = (is_null($value) && array_key_exists($key,
+                                $parameters)) ? $parameters[$key] : $value,
+                    );
+                    return route(
+                        $this->gatewayConfig['return_route']['name'],
+                        $parametersConfig,
+                    );
+                } else {
+                    return route($this->gatewayConfig['return_route']);
+                }
+            })(),
+            default => null
+        };
     }
 
     /**
