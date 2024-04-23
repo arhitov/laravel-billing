@@ -7,6 +7,7 @@ use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException;
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSupportMethodException;
 use Omnipay\Common\GatewayInterface;
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\RequestInterface;
 use Omnipay\Omnipay;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -53,6 +54,28 @@ class OmnipayGateway
     public function getGatewayName(): string
     {
         return $this->gatewayName;
+    }
+
+    /**
+     * Create a payment.
+     *
+     * @param array $options
+     * @return AbstractRequest|RequestInterface
+     */
+    public function purchase(array $options = []): AbstractRequest|RequestInterface
+    {
+        return $this->getGateway()->purchase($options);
+    }
+
+    /**
+     * Payment confirmation.
+     *
+     * @param array $options
+     * @return AbstractRequest|RequestInterface
+     */
+    public function capture(array $options = []): AbstractRequest|RequestInterface
+    {
+        return $this->getGateway()->capture($options);
     }
 
     /**

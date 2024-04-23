@@ -52,7 +52,7 @@ class GetPaymentInformationCommand extends Command
             try {
                 $omnipayGateway = new OmnipayGateway($operation->gateway);
 
-                $details = $omnipayGateway->getGateway()->details([
+                $details = $omnipayGateway->details([
                     'transactionReference' => $operation->gateway_payment_id,
                 ]);
                 /** @var \Omnipay\Common\Message\AbstractResponse $response */

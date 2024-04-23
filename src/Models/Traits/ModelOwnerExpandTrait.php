@@ -390,7 +390,7 @@ trait ModelOwnerExpandTrait
         $increase->createOrFail();
         $operation = $increase->getOperation();
 
-        $response = $omnipayGateway->getGateway()->purchase(array_filter([
+        $response = $omnipayGateway->purchase(array_filter([
             'amount'        => $amount,
             'currency'      => $balance->currency->value,
             'returnUrl'     => $omnipayGateway->getReturnUrl(['operation_uuid' => $operationUuid]),

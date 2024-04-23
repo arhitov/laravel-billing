@@ -48,7 +48,7 @@ class CaptureOmnipayPaymentCommand extends Command
             return self::FAILURE;
         }
 
-        $capture = $omnipayGateway->getGateway()->capture([
+        $capture = $omnipayGateway->capture([
             'transactionReference' => $transaction,
             'amount' => $operation->amount,
             'currency' => $operation->currency->value,
