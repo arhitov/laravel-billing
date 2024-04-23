@@ -179,9 +179,4 @@ class OmnipayGateway
     {
         return ! $this->getCapture();
     }
-
-    public function isSupportDetails(): bool
-    {
-        return method_exists($this->gateway, 'details');
-    }
 }

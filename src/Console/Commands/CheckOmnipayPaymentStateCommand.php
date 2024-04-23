@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Console\Commands;
 
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSupportMethodException;
 use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\OmnipayGateway;
 use Illuminate\Console\Command;
@@ -37,17 +38,15 @@ class CheckOmnipayPaymentStateCommand extends Command
             return self::FAILURE;
         }
 
-        if (! $omnipayGateway->isSupportDetails()) {
-            $this->warn('This gateway cannot receive payment information.');
-            return self::FAILURE;
-        }
-
-        $details = $omnipayGateway->getGateway()->details([
-            'transactionReference' => $transaction,
-        ]);
         try {
+            $details = $omnipayGateway->details([
+                'transactionReference' => $transaction,
+            ]);
             /** @var \Omnipay\Common\Message\AbstractResponse $response */
             $response = $details->send();
+        } catch (GatewayNotSupportMethodException) {
+            $this->warn('This gateway cannot receive payment information.');
+            return self::FAILURE;
         } catch (InvalidResponseException $exception) {
             $this->error($exception->getMessage());
             return self::FAILURE;

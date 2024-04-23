@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Console\Commands;
 
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSupportMethodException;
 use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\OmnipayGateway;
 use Illuminate\Console\Command;
@@ -46,18 +47,21 @@ class GetPaymentInformationCommand extends Command
 
         $gateway = $operation->gateway;
         $response = null;
+        $gatewayPaymentStatus = null;
         if (! empty($operation->gateway_payment_id)) {
             try {
                 $omnipayGateway = new OmnipayGateway($operation->gateway);
-                if ($omnipayGateway->isSupportDetails()) {
-                    $details = $omnipayGateway->getGateway()->details([
-                        'transactionReference' => $operation->gateway_payment_id,
-                    ]);
-                    /** @var \Omnipay\Common\Message\AbstractResponse $response */
-                    $response = $details->send();
 
-                    $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
-                };
+                $details = $omnipayGateway->getGateway()->details([
+                    'transactionReference' => $operation->gateway_payment_id,
+                ]);
+                /** @var \Omnipay\Common\Message\AbstractResponse $response */
+                $response = $details->send();
+
+                $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
+
+            } catch (GatewayNotSupportMethodException) {
+                $response = null;
             } catch (GatewayNotFoundException) {
                 $gateway .= ' (Error: Gateway not found!)';
             } catch (InvalidResponseException $exception) {
