@@ -2,6 +2,7 @@
 
 namespace Arhitov\LaravelBilling;
 
+use Arhitov\LaravelBilling\Contracts\BillableRootInterface;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceDecreaseEvent;
 use Arhitov\LaravelBilling\Events\BalanceIncreaseEvent;
@@ -16,11 +17,27 @@ use Throwable;
 
 class Transfer
 {
-    const SENDER_BALANCE_CHANGE = true;
-    const RECIPIENT_BALANCE_CHANGE = true;
-
     protected ?Operation $operation = null;
     protected ?Throwable $exception = null;
+
+    /**
+     * @param Operation $operation
+     * @return self
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
+     */
+    public static function make(Operation $operation): self
+    {
+        return new self(
+            $operation->sender_balance,
+            $operation->recipient_balance,
+            $operation->amount,
+            $operation->gateway,
+            $operation->description,
+            $operation->operation_identifier,
+            $operation->operation_uuid,
+            operation: $operation,
+        );
+    }
 
     /**
      * @param Balance $sender
@@ -30,6 +47,7 @@ class Transfer
      * @param string|null $description
      * @param string|null $operation_identifier
      * @param string|null $operation_uuid
+     * @param Operation|null $operation
      * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
      */
     public function __construct(
@@ -40,6 +58,7 @@ class Transfer
         protected ?string $description = null,
         protected ?string $operation_identifier = null,
         protected ?string $operation_uuid = null,
+        Operation $operation = null,
     )
     {
         if (0 > $this->amount || $this->amount > INF) {
@@ -47,7 +66,7 @@ class Transfer
         }
 
         // Create operation
-        $this->operation = Operation::make([
+        $this->operation = $operation ?? Operation::make([
             'operation_identifier'    => $this->operation_identifier ?? null,
             'operation_uuid'          => $this->operation_uuid ?? Str::orderedUuid()->toString(),
             'gateway'                 => $this->gateway,
@@ -97,6 +116,16 @@ class Transfer
         }
     }
 
+    public function isChangeSenderBalance(): bool
+    {
+        return ! $this->sender->owner instanceof BillableRootInterface;
+    }
+
+    public function isChangeRecipientBalance(): bool
+    {
+        return ! $this->recipient->owner instanceof BillableRootInterface;
+    }
+
     /**
      * @return void
      * @throws Exceptions\BalanceException
@@ -107,7 +136,8 @@ class Transfer
         if ($this->sender->currency !== $this->recipient->currency) {
             throw new Exceptions\OperationCurrencyNotMatchException($this->operation);
         }
-        if (static::SENDER_BALANCE_CHANGE) {
+
+        if ($this->isChangeSenderBalance()) {
             if (! $this->sender->state->isAllowDecrease()) {
                 throw new Exceptions\BalanceNotAllowDecreaseException($this->sender);
             }
@@ -115,7 +145,7 @@ class Transfer
                 throw new Exceptions\BalanceEmptyException($this->sender);
             }
         }
-        if (static::RECIPIENT_BALANCE_CHANGE && ! $this->recipient->state->isAllowIncrease()) {
+        if ($this->isChangeRecipientBalance() && ! $this->recipient->state->isAllowIncrease()) {
             throw new Exceptions\BalanceNotAllowIncreaseException($this->recipient);
         }
     }
@@ -213,22 +243,22 @@ class Transfer
                 /** @var Balance $balanceSender */
                 if (config('billing.database.use_lock_line') && config('billing.database.use_transaction')) {
 
-                    if (static::SENDER_BALANCE_CHANGE) {
+                    if ($this->isChangeSenderBalance()) {
                         $this->sender->lockForUpdate();
                     }
-                    if (static::RECIPIENT_BALANCE_CHANGE) {
+                    if ($this->isChangeRecipientBalance()) {
                         $this->recipient->lockForUpdate();
                     }
                     $this->operation->lockForUpdate();
 
-                    if (static::SENDER_BALANCE_CHANGE) {
+                    if ($this->isChangeSenderBalance()) {
                         // Load actual data
                         $balanceSender = Balance::findOrFail($this->sender->id);
                         $balanceSender->amount = $balanceSender->amount - $this->amount;
                         $balanceSender->saveOrFail();
                         $this->operation->sender_amount_after = $balanceSender->amount;
                     }
-                    if (static::RECIPIENT_BALANCE_CHANGE) {
+                    if ($this->isChangeRecipientBalance()) {
                         // Load actual data
                         $balanceRecipient = Balance::findOrFail($this->recipient->id);
                         $balanceRecipient->amount = $balanceRecipient->amount + $this->amount;
@@ -238,7 +268,7 @@ class Transfer
 
                 } else { // If a lock is used, then such a complex mechanism is not needed
 
-                    if (static::SENDER_BALANCE_CHANGE) {
+                    if ($this->isChangeSenderBalance()) {
                         $this->sender->newQuery()
                             ->where('id', '=', $this->sender->id)
                             ->limit(1)
@@ -254,7 +284,7 @@ class Transfer
                         $this->operation->sender_amount_after = $balanceSender->amount;
                     }
 
-                    if (static::RECIPIENT_BALANCE_CHANGE) {
+                    if ($this->isChangeRecipientBalance()) {
                         $this->recipient->newQuery()
                             ->where('id', '=', $this->recipient->id)
                             ->limit(1)
@@ -274,18 +304,18 @@ class Transfer
                 $this->operation->state = OperationStateEnum::Succeeded;
                 $this->operation->saveOrFail();
 
-                if (static::SENDER_BALANCE_CHANGE) {
+                if ($this->isChangeSenderBalance()) {
                     $this->sender->amount = $this->operation->sender_amount_after;
                 }
-                if (static::RECIPIENT_BALANCE_CHANGE) {
+                if ($this->isChangeRecipientBalance()) {
                     $this->recipient->amount = $this->operation->recipient_amount_after;
                 }
             });
 
-            if (static::SENDER_BALANCE_CHANGE) {
+            if ($this->isChangeSenderBalance()) {
                 event(new BalanceDecreaseEvent($this->sender));
             }
-            if (static::RECIPIENT_BALANCE_CHANGE) {
+            if ($this->isChangeRecipientBalance()) {
                 event(new BalanceIncreaseEvent($this->recipient));
             }
 

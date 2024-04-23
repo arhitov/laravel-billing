@@ -8,8 +8,6 @@ use Arhitov\LaravelBilling\Models\Balance;
 
 class Decrease extends Transfer
 {
-    const RECIPIENT_BALANCE_CHANGE = false;
-
     /**
      * @param Balance $sender
      * @param float $amount

@@ -18,6 +18,8 @@ class WebhookControllerTest extends ConsoleCommandsTestCase
         $balance = $owner->getBalanceOrCreate();
         $amount = '123.45';
 
+        $this->assertEquals(0, $balance->amount);
+
         $omnipayGateway = new OmnipayGateway(self::GATEWAY);
 
         $this
@@ -43,10 +45,18 @@ class WebhookControllerTest extends ConsoleCommandsTestCase
         $httpRequest = new Request(
             content: json_encode($notification, JSON_UNESCAPED_UNICODE)
         );
-
         $response = (new WebhookController())->webhookNotification($httpRequest, 'yookassa');
 
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals($omnipayGateway->getConfig('webhook.response.status', 201), $response->getStatusCode());
+
+        $operation->refresh();
+
+        $this->assertEquals('succeeded', $operation->state->value);
+        $this->assertEquals('success', $operation->gateway_payment_state);
+
+        $balance->refresh();
+
+        $this->assertEquals($amount, $balance->amount);
     }
 }

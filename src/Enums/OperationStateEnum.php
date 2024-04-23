@@ -28,4 +28,9 @@ enum OperationStateEnum: string
             OperationStateEnum::Succeeded->value,
         ]);
     }
+
+    public function isSucceeded(): bool
+    {
+        return $this->value === OperationStateEnum::Succeeded->value;
+    }
 }

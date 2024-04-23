@@ -6,6 +6,8 @@ use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
+use Arhitov\LaravelBilling\Exceptions\OperationException;
+use Arhitov\LaravelBilling\Transfer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -203,6 +205,8 @@ class Operation extends Model
     /**
      * @param AbstractResponse $response
      * @return $this
+     * @throws \Arhitov\LaravelBilling\Exceptions\LaravelBillingException
+     * @throws \Throwable
      */
     public function setStateByOmnipayGateway(AbstractResponse $response): self
     {
@@ -213,13 +217,29 @@ class Operation extends Model
                 $response->isCancelled() => 'cancel',
             };
 
-        $this->state = match (true) {
+        $newState = match (true) {
             'waiting_for_capture' === $state => OperationStateEnum::WaitingForCapture,
             $response->isSuccessful() => OperationStateEnum::Succeeded,
             $response->isCancelled() => OperationStateEnum::Canceled,
             default => $this->state,
         };
+
         $this->gateway_payment_state = $state;
+
+
+        // If it was active and not paid, but is now paid, then we carry out payment.
+        if (
+            $this->state->isActive() &&
+            ! $this->state->isSucceeded() &&
+            $newState->isSucceeded()
+        ) {
+            Transfer::make($this)->executeOrFail();
+            if (! $this->state->isSucceeded()) {
+                throw new OperationException($this, 'Error transfer');
+            }
+        } else {
+            $this->state = $newState;
+        }
 
         return $this;
     }
