@@ -53,6 +53,27 @@ class OmnipayGateway
     }
 
     /**
+     * @param string|null $key
+     * @param $default
+     * @return mixed
+     */
+    public function getConfig(string $key = null, $default = null): mixed
+    {
+        if ($key) {
+            $value = $this->gatewayConfig;
+            foreach (explode('.', $key) as $keyPart) {
+                if (is_array($value) && array_key_exists($keyPart, $value)) {
+                    $value = $value[$keyPart];
+                } else {
+                    return $default;
+                }
+            }
+            return $value;
+        }
+        return $this->gatewayConfig;
+    }
+
+    /**
      * @param array $parameters using only for return_route
      * @return string|null
      */
