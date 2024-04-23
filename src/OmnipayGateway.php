@@ -149,6 +149,11 @@ class OmnipayGateway
                         fn(&$value, $key) => $value = (is_null($value) && array_key_exists($key,
                                 $parameters)) ? $parameters[$key] : $value,
                     );
+                    foreach ($parameters as $key => $value) {
+                        if (! array_key_exists($key, $parametersConfig)) {
+                            $parametersConfig[$key] = $value;
+                        }
+                    }
                     return route(
                         $this->gatewayConfig['return_route']['name'],
                         $parametersConfig,

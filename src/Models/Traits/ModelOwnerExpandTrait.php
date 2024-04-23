@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Omnipay\Omnipay;
 use \Omnipay\Common\CreditCard as OmnipayCreditCard;
 
 /**
@@ -347,6 +346,7 @@ trait ModelOwnerExpandTrait
      * @param Balance|string|null $balance
      * @param string|null $gatewayName
      * @param OmnipayCreditCard|array|null $card
+     * @param array $returnRouteParameters
      * @return Payment
      * @throws \Arhitov\LaravelBilling\Exceptions\BalanceException
      * @throws \Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException
@@ -364,6 +364,7 @@ trait ModelOwnerExpandTrait
         Balance|string          $balance = null,
         string                  $gatewayName = null,
         OmnipayCreditCard|array $card = null,
+        array                   $returnRouteParameters = [],
     ): Payment {
         if (0 > $amount || $amount > INF) {
             throw new AmountException($amount);
@@ -393,7 +394,10 @@ trait ModelOwnerExpandTrait
         $response = $omnipayGateway->purchase(array_filter([
             'amount'        => $amount,
             'currency'      => $balance->currency->value,
-            'returnUrl'     => $omnipayGateway->getReturnUrl(['operation_uuid' => $operationUuid]),
+            'returnUrl'     => $omnipayGateway->getReturnUrl(array_merge(
+                $returnRouteParameters,
+                ['operation_uuid' => $operationUuid],
+            )),
             'transactionId' => $operation->operation_uuid,
             'description'   => $operation->description,
             'capture'       => $omnipayGateway->getCapture(),
