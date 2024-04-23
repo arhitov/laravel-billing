@@ -17,6 +17,7 @@ Billing module for Laravel projects with support for transactions, invoicing, su
 - Saved credit cards
 - Subscriptions
 - Using omnipay gateway
+- Webhook controller
 
 
 ### in developing

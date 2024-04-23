@@ -3,6 +3,7 @@
 namespace Arhitov\LaravelBilling\Exceptions\Gateway;
 
 use Arhitov\LaravelBilling\Exceptions\LaravelBillingException;
+use Exception;
 
 class GatewayException extends LaravelBillingException
 {
@@ -15,6 +16,7 @@ class GatewayException extends LaravelBillingException
     public function __construct(
         public string $gateway,
         string $msg = '',
+        public Exception|null $exception = null,
     )
     {
         parent::__construct($msg);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa2c316fa1651cbedf8d5669a5212056",
+    "content-hash": "aba051ed07b1c002a24289be08306164",
     "packages": [
         {
             "name": "arhitov/laravel-helpers",
@@ -6094,16 +6094,16 @@
     "packages-dev": [
         {
             "name": "arhitov/omnipay-yookassa",
-            "version": "5.1.0",
+            "version": "5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/arhitov/omnipay-yookassa.git",
-                "reference": "ac8c385165918f9711d41ffc8c0fb99149b08495"
+                "reference": "fa1eb73515dc9155693eb3c3dc27799d98d44a8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arhitov/omnipay-yookassa/zipball/ac8c385165918f9711d41ffc8c0fb99149b08495",
-                "reference": "ac8c385165918f9711d41ffc8c0fb99149b08495",
+                "url": "https://api.github.com/repos/arhitov/omnipay-yookassa/zipball/fa1eb73515dc9155693eb3c3dc27799d98d44a8f",
+                "reference": "fa1eb73515dc9155693eb3c3dc27799d98d44a8f",
                 "shasum": ""
             },
             "require": {
@@ -6186,7 +6186,7 @@
                 "issues": "https://github.com/arhitov/omnipay-yookassa/issues",
                 "source": "https://github.com/arhitov/omnipay-yookassa"
             },
-            "time": "2024-04-20T16:55:05+00:00"
+            "time": "2024-04-23T15:16:58+00:00"
         },
         {
             "name": "composer/semver",

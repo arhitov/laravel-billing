@@ -85,6 +85,14 @@ return [
                     'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
                 ],
                 'return_url' => 'https://www.example.com/pay',
+                'webhook' => [
+                    'response' => [
+                        'content' => null,
+                        'status' => 200,
+                    ],
+                    /** Trust incoming data. Otherwise, a request will be sent to the gateway API. */
+                    'trust_input_data' => false,
+                ],
             ],
             'yookassa-two-step' => [
                 'omnipay_class' => 'YooKassa',

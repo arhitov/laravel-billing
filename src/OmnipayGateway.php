@@ -4,8 +4,11 @@ namespace Arhitov\LaravelBilling;
 
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException;
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSupportMethodException;
 use Omnipay\Common\GatewayInterface;
+use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Omnipay;
+use Symfony\Component\HttpFoundation\Request;
 
 class OmnipayGateway
 {
@@ -13,7 +16,7 @@ class OmnipayGateway
     private string $gatewayName;
     private array $gatewayConfig;
 
-    public function __construct(string|null $gateway)
+    public function __construct(string|null $gateway, Request $httpRequest = null)
     {
 
         $gateway ??= config('billing.omnipay_gateway.default', null);
@@ -30,7 +33,7 @@ class OmnipayGateway
         $this->gatewayConfig = $gatewayConfig;
 
         // Initialization gateway
-        $this->gateway = Omnipay::create($gatewayConfig['omnipay_class']);
+        $this->gateway = Omnipay::create($gatewayConfig['omnipay_class'], httpRequest: $httpRequest);
         if (! empty($gatewayConfig['omnipay_initialize'])) {
             $this->gateway->initialize($gatewayConfig['omnipay_initialize']);
         }
@@ -50,6 +53,40 @@ class OmnipayGateway
     public function getGatewayName(): string
     {
         return $this->gatewayName;
+    }
+
+    /**
+     * Get payment information.
+     *
+     * @param array $options
+     * @return AbstractRequest
+     * @throws GatewayNotSupportMethodException
+     */
+    public function details(array $options = []): AbstractRequest
+    {
+        $gatewayInterface = $this->getGateway();
+        if (! method_exists($gatewayInterface, 'details')) {
+            throw new GatewayNotSupportMethodException($this->getGatewayName(), 'details');
+        }
+
+        return $gatewayInterface->details($options);
+    }
+
+    /**
+     * Input payment notification.
+     *
+     * @param array $options
+     * @return AbstractRequest
+     * @throws GatewayNotSupportMethodException
+     */
+    public function notification(array $options = []): AbstractRequest
+    {
+        $gatewayInterface = $this->getGateway();
+        if (! method_exists($gatewayInterface, 'notification')) {
+            throw new GatewayNotSupportMethodException($this->getGatewayName(), 'notification');
+        }
+
+        return $gatewayInterface->notification($options);
     }
 
     /**
