@@ -18,6 +18,8 @@ jobs:
 
       - name: Composer
         uses: php-actions/composer@v6
+        with:
+          php_version: ${{ matrix.php }}
 
       - name: PHPUnit
         uses: php-actions/phpunit@v3
