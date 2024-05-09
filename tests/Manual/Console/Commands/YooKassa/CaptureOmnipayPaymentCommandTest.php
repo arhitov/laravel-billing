@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Tests\Manual\Console\Commands\YooKassa;
 
@@ -65,7 +73,7 @@ class CaptureOmnipayPaymentCommandTest extends ConsoleCommandsTestCase
         } while (! $operation->state->isPaid());
 
         $this->callCommandAndOutput(
-            'billing:capture-omnipay--payment',
+            'billing:capture-omnipay-payment',
             [
                 'transaction' => $operation->gateway_payment_id,
                 '--gateway'   => self::GATEWAY,

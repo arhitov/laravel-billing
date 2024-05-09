@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Console\Commands;
 
@@ -8,7 +16,7 @@ use Arhitov\LaravelBilling\OmnipayGateway;
 use Illuminate\Console\Command;
 use Omnipay\Common\Exception\InvalidRequestException;
 
-#[\Symfony\Component\Console\Attribute\AsCommand(name: 'billing:capture-omnipay--payment')]
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'billing:capture-omnipay-payment')]
 class CaptureOmnipayPaymentCommand extends Command
 {
     /**
@@ -16,7 +24,7 @@ class CaptureOmnipayPaymentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'billing:capture-omnipay--payment {transaction} {--gateway=}';
+    protected $signature = 'billing:capture-omnipay-payment {transaction} {--gateway=}';
 
     /**
      * The console command description.
@@ -62,7 +70,7 @@ class CaptureOmnipayPaymentCommand extends Command
             return self::FAILURE;
         }
 
-        $operation->setStateByOmnipayGateway($response)
+        $operation->setStateByOmnipayGateway($omnipayGateway, $response)
                   ->saveOrFail();
 
         $gatewayPaymentStatus = method_exists($response, 'getState') ? $response->getState() : null;
