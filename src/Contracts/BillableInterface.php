@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Contracts;
 
@@ -131,4 +139,12 @@ interface BillableInterface
         string                  $gatewayName = null,
         OmnipayCreditCard|array $card = null,
     ): Payment;
+
+    /**
+     * ***********************
+     * *** Fiscal receipts ***
+     * ***********************
+     */
+
+    public function receipt(): MorphMany;
 }

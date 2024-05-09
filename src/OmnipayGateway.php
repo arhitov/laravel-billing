@@ -1,7 +1,16 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling;
 
+use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayException;
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException;
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException;
 use Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSupportMethodException;
@@ -206,5 +215,32 @@ class OmnipayGateway
     public function isTwoStagePayment(): bool
     {
         return ! $this->getCapture();
+    }
+
+    /**
+     * Use a receipt when paying.
+     *
+     * @return bool
+     */
+    public function isUseOmnireceipt(): bool
+    {
+        return ! empty($this->getConfig('omnireceipt_gateway'));
+    }
+
+    /**
+     * Get OmnireceiptGateway by config OmnipayGateway.
+     *
+     * @return \Arhitov\LaravelBilling\OmnireceiptGateway
+     * @throws \Arhitov\LaravelBilling\Exceptions\Gateway\GatewayException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotFoundException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Gateway\GatewayNotSpecifiedException
+     */
+    public function getOmnireceiptGateway(): OmnireceiptGateway
+    {
+        if (! $this->isUseOmnireceipt()) {
+            throw new GatewayException($this->getGatewayName(), 'OmnireceiptGateway is not specified in the settings of this gateway.');
+        }
+
+        return new OmnireceiptGateway($this->getConfig('omnireceipt_gateway'));
     }
 }

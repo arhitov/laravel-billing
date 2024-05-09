@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Console\Commands;
 
@@ -24,7 +32,7 @@ class CheckOmnipayPaymentStateCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Check payment state';
+    protected $description = 'Check the payment state and adjust it.';
 
     public function handle(): int
     {
@@ -62,7 +70,7 @@ class CheckOmnipayPaymentStateCommand extends Command
             return self::FAILURE;
         }
 
-        $operation->setStateByOmnipayGateway($response)
+        $operation->setStateByOmnipayGateway($omnipayGateway, $response)
                   ->saveOrFail();
 
         return self::SUCCESS;

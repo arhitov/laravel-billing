@@ -1,9 +1,18 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Models\Traits;
 
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
+use Arhitov\LaravelBilling\Enums\ReceiptStateEnum;
 use Arhitov\LaravelBilling\Enums\SubscriptionStateEnum;
 use Arhitov\LaravelBilling\Events\BalanceCreatedEvent;
 use Arhitov\LaravelBilling\Events\SubscriptionCreatedEvent;
@@ -16,6 +25,7 @@ use Arhitov\LaravelBilling\Models\Balance;
 use Arhitov\LaravelBilling\Models\Operation;
 use Arhitov\LaravelBilling\Models\CreditCard;
 use Arhitov\LaravelBilling\Models\Payment;
+use Arhitov\LaravelBilling\Models\Receipt;
 use Arhitov\LaravelBilling\Models\Subscription;
 use Arhitov\LaravelBilling\OmnipayGateway;
 use Carbon\Carbon;
@@ -23,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use \Omnipay\Common\CreditCard as OmnipayCreditCard;
+use Omnipay\Common\CreditCard as OmnipayCreditCard;
 
 /**
  * @property int $id
@@ -48,6 +58,30 @@ trait ModelOwnerExpandTrait
             'owner_type' => static::class,
             'owner_id' => $this->getKey(),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getOwnerName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getOwnerEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getOwnerPhone(): ?string
+    {
+        return null;
     }
 
     /**
@@ -377,9 +411,16 @@ trait ModelOwnerExpandTrait
         };
 
         $omnipayGateway = new OmnipayGateway($gatewayName);
+        $operationUuid = Str::orderedUuid()->toString();
+
+        $receipt = null;
+        if ($omnipayGateway->isUseOmnireceipt()) {
+            $receipt = $omnipayGateway->getOmnireceiptGateway()->receiptFactory($this, [], ['amount' => $amount, 'currency' => $balance->currency->value]);
+            $receipt->operation_uuid = $operationUuid;
+            $receipt->saveOrFail();
+        }
 
         // Creating a balance increase record
-        $operationUuid = Str::orderedUuid()->toString();
         $increase = new Increase(
             $balance,
             $amount,
@@ -410,14 +451,37 @@ trait ModelOwnerExpandTrait
         $operation->saveOrFail();
 
         if ($response->isSuccessful()) {
-            DatabaseHelper::transaction(function() use (&$increase) {
+            DatabaseHelper::transaction(function() use (&$increase, &$receipt) {
                 $increase->executeOrFail();
             });
+            if ($receipt) {
+                $receipt->state = ReceiptStateEnum::Paid;
+                $receipt->saveOrFail();
+            }
+        } else {
+            if ($receipt) {
+                $receipt->state = ReceiptStateEnum::Pending;
+                $receipt->saveOrFail();
+            }
         }
 
         return new Payment(
             $increase,
             $response
         );
+    }
+
+    /**
+     * ***********************
+     * *** Fiscal receipts ***
+     * ***********************
+     */
+
+    /**
+     * @return MorphMany<Balance>
+     */
+    final public function receipt(): MorphMany
+    {
+        return $this->morphMany(Receipt::class, 'owner');
     }
 }

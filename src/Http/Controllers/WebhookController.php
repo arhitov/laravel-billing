@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Http\Controllers;
 
@@ -43,7 +51,7 @@ class WebhookController
             throw new OperationNotFoundException("Operation not found for {$gateway}:{$gatewayPaymentId}");
         }
 
-        $operation->setStateByOmnipayGateway($response)
+        $operation->setStateByOmnipayGateway($omnipayGateway, $response)
                   ->saveOrFail();
 
         return response($omnipayGateway->getConfig('webhook.response.content'), $omnipayGateway->getConfig('webhook.response.status', 201));

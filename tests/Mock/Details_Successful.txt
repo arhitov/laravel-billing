@@ -1,0 +1,24 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "uuid": "details-2da5c87d-0384-50e8-a7f3-8d5646dd9e10",
+  "type": "payment",
+  "state": "pending",
+  "date": "2024-05-09 13:48:01",
+  "client_uuid": "4a65ecb6-8b1b-11df-be16-e0cb4ed5f70f",
+  "client_name": "Alexander Arhitov",
+  "client_email": "clgsru@gmail.com",
+  "goods": [
+    {
+      "name": "FLAG, W/ 2 HOLDERS, NO. 22",
+      "code": "6446963/104515",
+      "type": "product",
+      "amount": 2.12,
+      "currency": "USD",
+      "quantity": 2,
+      "unit": "pc",
+      "tax": 0
+    }
+  ]
+}

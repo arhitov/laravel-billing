@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 return [
     /**
@@ -24,6 +32,8 @@ return [
             'credit_card' => 'billing_credit_cards',
             /** Subscription table */
             'subscription' => 'billing_subscriptions',
+            /** Fiscal receipts table */
+            'fiscal_receipt' => 'billing_fiscal_receipt',
         ],
 
         /**
@@ -68,7 +78,7 @@ return [
     ],
 
     /**
-     * Gateway for createPayment
+     * Gateways by Omnipay
      * The list contains example data. If you don't use gateways, you can delete this list.
      */
     'omnipay_gateway' => [
@@ -77,6 +87,11 @@ return [
             'dummy' => [
                 'omnipay_class' => 'Dummy',
                 'card_required' => true,
+            ],
+            'dummy-omnireceipt-full' => [
+                'omnipay_class'       => 'Dummy',
+                'card_required'       => true,
+                'omnireceipt_gateway' => 'dummy_full',
             ],
             'yookassa' => [
                 'omnipay_class' => 'YooKassa',
@@ -91,7 +106,7 @@ return [
                         'status' => 200,
                     ],
                     /** Trust incoming data. Otherwise, a request will be sent to the gateway API. */
-                    'trust_input_data' => false,
+                    'trust_input_data' => true,
                 ],
             ],
             'yookassa-two-step' => [
@@ -102,6 +117,16 @@ return [
                 ],
                 'return_url' => 'https://www.example.com/pay',
                 'capture' => false,
+            ],
+            'yookassa-two-step-omnireceipt-full' => [
+                'omnipay_class' => 'YooKassa',
+                'omnipay_initialize' => [
+                    'shop_id' => 54401,
+                    'secret' => 'test_Fh8hUAVVBGUGbjmlzba6TB0iyUbos_lueTHE-axOwM0',
+                ],
+                'return_url' => 'https://www.example.com/pay',
+                'capture' => false,
+                'omnireceipt_gateway' => 'dummy_full',
             ],
             'yookassa-use-route-name' => [
                 'omnipay_class' => 'YooKassa',
@@ -121,6 +146,63 @@ return [
         ],
         'payment' => [
             'default_description' => 'Payment for site services',
+        ],
+    ],
+
+    /**
+     * Gateways by Omnireceipt Fiscal
+     * array|null
+     */
+    'omnireceipt_gateway' => [
+        'default' => 'dummy',
+        'gateways' => [
+            'dummy' => [
+                'omnireceipt_class' => 'Dummy',
+                'omnireceipt_initialize' => [
+                    'auth' => 'ok',
+                    'fixture' => false,
+                    'default_properties' => [
+                        'receipt_item' => [
+                            'name'         => 'Information Services',
+                            'code'         => 'info_goods',
+                            'product_type' => 'SERVICE',
+                            'quantity'     => 1,
+                            'currency'     => 'RUB',
+                            'unit'         => 'pc',
+                            'unit_uuid'    => 'bd72d926-55bc-11d9-848a-00112f43529a',
+                            'vat_rate'     => 13,
+                        ],
+                    ],
+                ],
+
+            ],
+            'dummy_full' => [
+                'omnireceipt_class' => 'Dummy',
+                'omnireceipt_initialize' => [
+                    'auth' => 'ok',
+                    'default_properties' => [
+                        'seller' => [
+                            'uuid' => 'cb4ed5f7-8b1b-11df-be16-e04a65ecb60f',
+                            'name' => 'www.LeanGroup.Ru',
+                        ],
+                        'customer' => [
+                            'type' => 2, // Number	Тип покупателя: 0 - юр.лицо, 1 - индивидуальный предприниматель, 2 - физ.лицо
+                        ],
+                        'receipt' => [
+                            'type'     => 'payment',
+                        ],
+                        'receipt_item' => [
+                            'name'         => 'Information Services',
+                            'code'         => 'info_goods',
+                            'product_type' => 'SERVICE',
+                            'quantity'     => 1,
+                            'unit'         => 'pc',
+                            'unit_uuid'    => 'bd72d926-55bc-11d9-848a-00112f43529a',
+                            'vat_rate'     => 13,
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
 

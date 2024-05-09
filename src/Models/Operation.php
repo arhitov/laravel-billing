@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Models;
 
@@ -6,7 +14,9 @@ use Arhitov\Helpers\Model\Eloquent\StateDatetimeTrait;
 use Arhitov\Helpers\Validating\EloquentModelExtendTrait;
 use Arhitov\LaravelBilling\Enums\CurrencyEnum;
 use Arhitov\LaravelBilling\Enums\OperationStateEnum;
+use Arhitov\LaravelBilling\Enums\ReceiptStateEnum;
 use Arhitov\LaravelBilling\Exceptions\OperationException;
+use Arhitov\LaravelBilling\OmnipayGateway;
 use Arhitov\LaravelBilling\Transfer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -203,12 +213,15 @@ class Operation extends Model
     }
 
     /**
+     * @param \Arhitov\LaravelBilling\OmnipayGateway $omnipayGateway
      * @param AbstractResponse $response
      * @return $this
-     * @throws \Arhitov\LaravelBilling\Exceptions\LaravelBillingException
+     * @throws \Arhitov\LaravelBilling\Exceptions\BalanceException
+     * @throws \Arhitov\LaravelBilling\Exceptions\Common\AmountException
+     * @throws \Arhitov\LaravelBilling\Exceptions\OperationException
      * @throws \Throwable
      */
-    public function setStateByOmnipayGateway(AbstractResponse $response): self
+    public function setStateByOmnipayGateway(OmnipayGateway $omnipayGateway, AbstractResponse $response): self
     {
         $state = method_exists($response, 'getState')
             ? $response->getState()
@@ -226,7 +239,6 @@ class Operation extends Model
 
         $this->gateway_payment_state = $state;
 
-
         // If it was active and not paid, but is now paid, then we carry out payment.
         if (
             $this->state->isActive() &&
@@ -234,9 +246,14 @@ class Operation extends Model
             $newState->isSucceeded()
         ) {
             Transfer::make($this)->executeOrFail();
+
             if (! $this->state->isSucceeded()) {
                 throw new OperationException($this, 'Error transfer');
+            } elseif ($omnipayGateway->isUseOmnireceipt() and $receipt = Receipt::query()->where('operation_uuid', '=', $this->operation_uuid)->first()) {
+                $receipt->setState(ReceiptStateEnum::Paid)
+                        ->saveOrFail();
             }
+
         } else {
             $this->state = $newState;
         }

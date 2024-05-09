@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Exceptions\Gateway;
 
@@ -12,6 +20,7 @@ class GatewayException extends LaravelBillingException
      *
      * @param string $gateway
      * @param string $msg
+     * @param \Exception|null $exception
      */
     public function __construct(
         public string $gateway,

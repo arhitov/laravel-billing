@@ -1,7 +1,7 @@
 {
     "name": "arhitov/laravel-billing",
     "description": "Billing module for laravel projects",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -24,23 +24,26 @@
         "php": "^8.2",
         "arhitov/laravel-helpers": "^0.1",
         "arhitov/laravel-package-helpers": ">0.2",
-        "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10",
-        "omnipay/common": "^3",
-        "php-http/curl-client": "^2.3",
-        "php-http/httplug": "^2.4",
-        "watson/validating": "^8.2"
+        "omnipay/common": "^3.3",
+        "omnireceipt/common": "^1.4",
+        "watson/validating": "^8.2",
+        "nesbot/carbon": "^2"
     },
     "require-dev": {
-        "arhitov/omnipay-yookassa": "^5.1.0",
-        "omnipay/dummy": "*",
-        "omnipay/tests": "*",
-        "orchestra/testbench": "*",
-        "phpunit/phpunit": "*",
-        "ext-readline": "*"
+        "guzzlehttp/psr7": "^2.6",
+        "ext-readline": "*",
+        "arhitov/omnipay-yookassa": "^5.1.1",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "mockery/mockery": "^1.6",
+        "omnipay/dummy": "^3",
+        "omnireceipt/dummy": "^2.1",
+        "orchestra/testbench": "^v8",
+        "php-http/curl-client": "^2.3",
+        "php-http/mock-client": "^1.6",
+        "phpunit/phpunit": "^10"
     },
     "suggest": {
-        "Omnipay/Dummy": "YooKassa driver for Omnipay payment processing library",
         "arhitov/omnipay-yookassa": "YooKassa driver for Omnipay payment processing library"
     },
     "autoload": {
@@ -69,7 +72,7 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "RC",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [

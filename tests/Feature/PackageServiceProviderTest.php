@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Tests\Feature;
 
@@ -25,5 +33,6 @@ class PackageServiceProviderTest extends FeatureTestCase
         $this->assertContains('billing:get-omnipay-payment-information', $artisanCommandList);
         $this->assertContains('billing:check-omnipay-payment-state', $artisanCommandList);
         $this->assertContains('billing:capture-omnipay-payment', $artisanCommandList);
+        $this->assertContains('billing:fiscal-receipt-check-state', $artisanCommandList);
     }
 }
