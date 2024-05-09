@@ -1,4 +1,12 @@
 <?php
+/**
+ * Billing module for laravel projects
+ *
+ * @link      https://github.com/arhitov/laravel-billing
+ * @package   arhitov/laravel-billing
+ * @license   MIT
+ * @copyright Copyright (c) 2024, Alexander Arhitov, clgsru@gmail.com
+ */
 
 namespace Arhitov\LaravelBilling\Tests\Feature;
 
@@ -44,8 +52,6 @@ class CreatePaymentTest extends FeatureTestCase
 
         $this->assertEquals($gatewayPaymentId, $operation->gateway_payment_id);
         $this->assertEquals($gatewayPaymentStatus, $operation->gateway_payment_state);
-
-        $this->assertTrue(true);
     }
 
     /**
