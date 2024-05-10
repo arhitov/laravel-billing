@@ -380,7 +380,7 @@ trait ModelOwnerExpandTrait
      * @param Balance|string|null $balance
      * @param string|null $gatewayName
      * @param OmnipayCreditCard|array|null $card
-     * @param array $returnRouteParameters
+     * @param array{return_route: array, receipt: array, receipt_item: array} $parameters
      * @return Payment
      * @throws \Arhitov\LaravelBilling\Exceptions\BalanceException
      * @throws \Arhitov\LaravelBilling\Exceptions\BalanceNotFoundException
@@ -398,7 +398,7 @@ trait ModelOwnerExpandTrait
         Balance|string          $balance = null,
         string                  $gatewayName = null,
         OmnipayCreditCard|array $card = null,
-        array                   $returnRouteParameters = [],
+        array                   $parameters = [],
     ): Payment {
         if (0 > $amount || $amount > INF) {
             throw new AmountException($amount);
@@ -415,7 +415,14 @@ trait ModelOwnerExpandTrait
 
         $receipt = null;
         if ($omnipayGateway->isUseOmnireceipt()) {
-            $receipt = $omnipayGateway->getOmnireceiptGateway()->receiptFactory($this, [], ['amount' => $amount, 'currency' => $balance->currency->value]);
+            $receipt = $omnipayGateway->getOmnireceiptGateway()->receiptFactory(
+                $this,
+                $parameters['receipt'] ?? [],
+                array_merge(
+                    $parameters['receipt_item'] ?? [],
+                    ['amount' => $amount, 'currency' => $balance->currency->value],
+                ),
+            );
             $receipt->operation_uuid = $operationUuid;
             $receipt->saveOrFail();
         }
@@ -436,7 +443,7 @@ trait ModelOwnerExpandTrait
             'amount'        => $amount,
             'currency'      => $balance->currency->value,
             'returnUrl'     => $omnipayGateway->getReturnUrl(array_merge(
-                $returnRouteParameters,
+                $parameters['return_route'] ?? [],
                 ['operation_uuid' => $operationUuid],
             )),
             'transactionId' => $operation->operation_uuid,
