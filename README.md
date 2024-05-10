@@ -18,11 +18,7 @@ Billing module for Laravel projects with support for transactions, invoicing, su
 - Subscriptions
 - Using omnipay gateway
 - Webhook controller
-
-
-### in developing
-- Using omnipay gateway
-- Using acquiring
+- Using Omnireceipt Fiscal
 
 ## Sponsor my work!
 
