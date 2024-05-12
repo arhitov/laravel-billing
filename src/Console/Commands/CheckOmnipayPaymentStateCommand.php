@@ -62,7 +62,7 @@ class CheckOmnipayPaymentStateCommand extends Command
 
         /** @var Operation|null $operation */
         $operation = Operation::query()
-                              ->where('gateway', '=', $gateway)
+                              ->where('gateway', '=', $omnipayGateway->getGateway())
                               ->where('gateway_payment_id', '=', $response->getTransactionReference())
                               ->first();
         if (! $operation) {
