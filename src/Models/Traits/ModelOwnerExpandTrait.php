@@ -40,6 +40,8 @@ use Omnipay\Common\CreditCard as OmnipayCreditCard;
  */
 trait ModelOwnerExpandTrait
 {
+    protected array $ownerData = [];
+
     public static function bootDeleteCascadeBalance(): void
     {
         if (config('billing.database.delete_cascade')) {
@@ -61,11 +63,19 @@ trait ModelOwnerExpandTrait
     }
 
     /**
+     * @return ?string
+     */
+    public function getOwnerUuid(): ?string
+    {
+        return $this->ownerData['uuid'] ?? null;
+    }
+
+    /**
      * @return string
      */
     public function getOwnerName(): string
     {
-        return $this->name;
+        return $this->ownerData['name'] ?? $this->name;
     }
 
     /**
@@ -73,7 +83,7 @@ trait ModelOwnerExpandTrait
      */
     public function getOwnerEmail(): ?string
     {
-        return $this->email;
+        return $this->ownerData['email'] ?? $this->email;
     }
 
     /**
@@ -81,7 +91,18 @@ trait ModelOwnerExpandTrait
      */
     public function getOwnerPhone(): ?string
     {
-        return null;
+        return $this->ownerData['phone'] ?? null;
+    }
+
+    /**
+     * Setting owner data
+     *
+     * @param array $data
+     * @return void
+     */
+    public function setOwnerData(array $data): void
+    {
+        $this->ownerData = $data;
     }
 
     /**

@@ -92,7 +92,8 @@ class OmnireceiptGateway
         $receipt->setCustomer(
             $this->getGateway()->customerFactory(
                 array_filter([
-                    'name' => $owner->getOwnerName(),
+                    'uuid'  => $owner->getOwnerUuid(),
+                    'name'  => $owner->getOwnerName(),
                     'email' => $owner->getOwnerEmail(),
                     'phone' => $owner->getOwnerPhone(),
                 ])

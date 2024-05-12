@@ -11,6 +11,7 @@
 namespace Arhitov\LaravelBilling\Services\FiscalReceipt;
 
 use Arhitov\LaravelBilling\Enums\ReceiptStateEnum;
+use Arhitov\LaravelBilling\Exceptions\Receipt\ReceiptException;
 use Arhitov\LaravelBilling\Models\Receipt;
 use Arhitov\LaravelBilling\OmnireceiptGateway;
 use Carbon\Carbon;
@@ -42,6 +43,12 @@ class FiscalReceiptCheckState
         return $this->builder()->count();
     }
 
+    /**
+     * @return void
+     * @throws \Arhitov\LaravelBilling\Exceptions\Receipt\ReceiptStateException
+     * @throws \Omnireceipt\Common\Exceptions\Parameters\ParameterValidateException
+     * @throws \Throwable
+     */
     public function execute(): void
     {
         // First we make a request to get a receipt from the API for the last X amount of time.
@@ -79,6 +86,13 @@ class FiscalReceiptCheckState
                     $response = $this->gateway->getGateway()->createReceipt($receipt->getReceipt());
                     if ($response->isSuccessful()) {
                         $receipt->changeStateOrFail(ReceiptStateEnum::Send);
+                    } else {
+                        throw new ReceiptException($receipt, implode(
+                            '; ',
+                            method_exists($response, 'getPayload')
+                                ? $response->getPayload()['warning'] ?? []
+                                : null,
+                        ));
                     }
                 } else {
                     $unknownReceipt[] = $receipt;
